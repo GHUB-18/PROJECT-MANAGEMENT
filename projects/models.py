@@ -31,3 +31,21 @@ class ProjectFile(models.Model):
 
     def __str__(self):
         return f"{self.file.name} in {self.project.name}"
+    
+class Membership(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    is_leader = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"{self.user.username} in {self.project.name}"
+
+class Activity(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)   
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    action = models.CharField(max_length=255)
+    timestamp = models.DateTimeField(auto_now_add=True)
+    details = models.TextField()
+
+    def __str__(self):
+        return f"{self.user.username} {self.action} in {self.project.name} at {self.timestamp}"

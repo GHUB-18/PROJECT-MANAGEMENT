@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard | Project Management</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; background: #f0f2f5; }
+        nav { background: #343a40; color: white; padding: 1rem; display: flex; justify-content: space-between; }
+        .container { padding: 2rem; max-width: 1000px; margin: auto; }
+        .project-card { background: white; padding: 1.5rem; border-radius: 8px; margin-bottom: 1rem; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .project-card h3 { margin-top: 0; color: #007bff; }
+        .btn { display: inline-block; padding: 8px 16px; background: #007bff; color: white; text-decoration: none; border-radius: 4px; }
+        .no-projects { text-align: center; color: #666; margin-top: 3rem; }
+    </style>
+</head>
+<body>
+    <nav>
+        <span>Project Management System</span>
+        <span>Welcome, {{ user.username }}!</span>
+    </nav>
+
+    <div class="container">
+        <h2>Your Projects</h2>
+        
+        {% if projects %}
+            {% for project in projects %}
+                <div class="project-card">
+                    <h3>{{ project.name }}</h3>
+                    <p>{{ project.description|truncatewords:20 }}</p>
+                    <a href="{% url 'project_detail' project.pk %}" class="btn">View Project & Tasks</a>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="no-projects">
+                <p>You haven't been added to any projects yet.</p>
+                <p>Wait for an admin to invite you or create a project in the <a href="/admin">Admin Panel</a>.</p>
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html>
