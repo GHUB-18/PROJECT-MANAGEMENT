@@ -1,0 +1,173 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="max-w-5xl mx-auto mt-10 px-4">
+
+    <!-- Header -->
+    <div class="flex justify-between items-start mb-8">
+        <div>
+            <h1 class="text-4xl font-extrabold text-gray-900 tracking-tight">
+                {{ project.title }}
+            </h1>
+            <p class="text-lg text-gray-500 mt-2">
+                {{ project.description }}
+            </p>
+        </div>
+
+        {% if is_owner %}
+        <a href="{% url 'create_task' project.id %}"
+           class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-xl font-semibold shadow-sm transition-all flex items-center gap-2">
+            <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+            </svg>
+            New Task
+        </a>
+        {% endif %}
+    </div>
+
+    <!-- Invite Link -->
+    {% if is_owner %}
+    <div class="mb-10 p-6 bg-white border border-gray-200 rounded-2xl shadow-sm">
+        <h3 class="text-sm font-bold text-gray-400 uppercase tracking-widest mb-4">
+            Team Invitation
+        </h3>
+
+        <div class="flex items-center gap-3">
+            <input type="text"
+                   id="inviteLink"
+                   readonly
+                   value="{{ invite_link }}"
+                   class="w-full pl-4 pr-12 py-3 text-sm border border-gray-200 rounded-xl bg-gray-50 font-mono text-indigo-600 focus:ring-2 focus:ring-indigo-500 outline-none">
+
+            <button onclick="copyInviteLink()"
+                    class="bg-gray-900 text-white px-6 py-3 rounded-xl text-sm font-bold hover:bg-gray-800 transition shadow-lg active:scale-95">
+                <span id="copyText">Copy Link</span>
+            </button>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Task Columns -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+
+        <!-- URGENT -->
+        <div>
+            <div class="flex items-center gap-2 mb-4">
+                <span class="w-3 h-3 bg-red-500 rounded-full animate-pulse"></span>
+                <h3 class="text-gray-900 font-bold uppercase text-sm tracking-widest">
+                    Urgent
+                </h3>
+            </div>
+
+            <div class="space-y-4">
+                {% for task in urgent_tasks %}
+                <div class="group bg-white p-5 rounded-2xl border border-gray-200 shadow-sm hover:shadow-md transition-all border-l-4 border-l-red-500">
+
+                    <div class="flex justify-between items-start mb-2">
+                        <p class="font-bold text-gray-800 group-hover:text-indigo-600 transition">
+                            {{ task.title }}
+                        </p>
+
+                        <a href="{% url 'toggle_task' task.id %}"
+                           class="opacity-0 group-hover:opacity-100 p-1 hover:bg-green-100 rounded-full transition text-green-600">
+                            ✔
+                        </a>
+                    </div>
+
+                    <p class="text-xs text-gray-500 mb-3">
+                        {{ task.description|default:"No description provided."|truncatewords:12 }}
+                    </p>
+
+                    <div class="flex items-center gap-2">
+                        <div class="w-6 h-6 rounded-full bg-indigo-100 flex items-center justify-center text-[10px] font-bold text-indigo-700">
+                            {{ task.assigned_to.username|slice:":1"|upper }}
+                        </div>
+                        <span class="text-[11px] text-gray-400 font-medium">
+                            @{{ task.assigned_to.username }}
+                        </span>
+                    </div>
+
+                </div>
+                {% empty %}
+                <p class="text-gray-400 text-sm">No urgent tasks 🎉</p>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- PENDING -->
+        <div>
+            <div class="flex items-center gap-2 mb-4">
+                <span class="w-3 h-3 bg-amber-400 rounded-full"></span>
+                <h3 class="text-gray-900 font-bold uppercase text-sm tracking-widest">
+                    Pending
+                </h3>
+            </div>
+
+            <div class="space-y-4">
+                {% for task in pending_tasks %}
+                <div class="group bg-white p-5 rounded-2xl border border-gray-200 shadow-sm hover:shadow-md transition-all border-l-4 border-l-amber-400">
+
+                    <div class="flex justify-between items-start mb-2">
+                        <p class="font-bold text-gray-800">
+                            {{ task.title }}
+                        </p>
+
+                        <a href="{% url 'toggle_task' task.id %}"
+                           class="opacity-0 group-hover:opacity-100 p-1 hover:bg-green-100 rounded-full transition text-green-600">
+                            ✔
+                        </a>
+                    </div>
+
+                    <p class="text-xs text-gray-400">
+                        @{{ task.assigned_to.username }}
+                    </p>
+                </div>
+                {% empty %}
+                <p class="text-gray-400 text-sm">No pending tasks</p>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- COMPLETED -->
+        <div>
+            <div class="flex items-center gap-2 mb-4">
+                <span class="w-3 h-3 bg-green-500 rounded-full"></span>
+                <h3 class="text-gray-900 font-bold uppercase text-sm tracking-widest">
+                    Completed
+                </h3>
+            </div>
+
+            <div class="space-y-4 opacity-75">
+                {% for task in completed_tasks %}
+                <div class="bg-gray-50 p-4 rounded-2xl border border-dashed border-gray-300 flex justify-between items-center">
+                    <span class="line-through text-gray-400 text-sm font-medium">
+                        {{ task.title }}
+                    </span>
+                    <span class="text-green-500">✔</span>
+                </div>
+                {% empty %}
+                <p class="text-gray-400 text-sm">No completed tasks yet</p>
+                {% endfor %}
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- JS -->
+<script>
+function copyInviteLink() {
+    const input = document.getElementById("inviteLink");
+    const buttonText = document.getElementById("copyText");
+
+    navigator.clipboard.writeText(input.value).then(() => {
+        buttonText.innerText = "Copied!";
+        setTimeout(() => {
+            buttonText.innerText = "Copy Link";
+        }, 2000);
+    });
+}
+</script>
+
+{% endblock %}

@@ -1,70 +1,82 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth import login, authenticate, logout
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.decorators import login_required
-from .models import Project, Task, ProjectFile, Membership, Activity
-from django.contrib.auth.models import User
 from django.contrib import messages
+from django.db.models import Prefetch
+from django.utils import timezone
+import uuid
 
-# Create your views here.
-# 1. Registration View
-def register_view(request):
-    if request.method == 'POST':
-        form = UserCreationForm(request.POST)
-        if form.is_valid():
-            user = form.save(commit=False)
-            # Grab the email from the POST data manually
-            user.email = request.POST.get('email') 
-            user.save()
-            login(request, user)
-            return redirect('dashboard')
-    else:
-        form = UserCreationForm()
-    return render(request, 'projects/register.html', {'form': form})
+from projects.models import Project
+from tasks.models import Task
+from .forms import ProjectForm
 
-# 2. Login View
-def login_view(request):
-    if request.method == 'POST':
-        email = request.POST.get('email')
-        password = request.POST.get('password')
-        
-        try:
-            # Find the user associated with this email
-            user_obj = User.objects.get(email=email)
-            user = authenticate(request, username=user_obj.username, password=password)
-            
-            if user is not None:
-                login(request, user)
-                return redirect('dashboard')
-            else:
-                messages.error(request, "Invalid password.")
-        except User.objects.DoesNotExist:
-            messages.error(request, "No account found with that email.")
-            
-    return render(request, 'projects/login.html')
 
-# 3. Dashboard (Home Page)
-@login_required # This sends them to login if they aren't authenticated
-def dashboard(request):
-    # Only show projects where the user is a member or leader
-    projects = Project.objects.filter(members=request.user) | Project.objects.filter(leader=request.user)
-    return render(request, 'dashboard.html', {'projects': projects.distinct()})
+# 🔑 Helper: Generate unique invite token
+def generate_unique_token():
+    while True:
+        token = str(uuid.uuid4())
+        if not Project.objects.filter(invite_token=token).exists():
+            return token
 
-# 4. Project Detail View
+
+# 🏠 Project Detail View
 @login_required
 def project_detail(request, project_id):
-    project = get_object_or_404(Project, pk=project_id)
-    # Filter tasks based on completion status
-    pending_tasks = project.tasks.filter(is_completed=False).order_by('deadline')
-    completed_tasks = project.tasks.filter(is_completed=True).order_by('-completed_at')
-    
+    project = get_object_or_404(
+        Project.objects.prefetch_related(
+            Prefetch('task_set', queryset=Task.objects.order_by('due_date'))
+        ),
+        id=project_id
+    )
+
+    # 🔒 Access control
+    if not project.members.filter(pk=request.user.pk).exists():
+        messages.error(request, "You do not have access to this project.")
+        return redirect('dashboard')
+
+    tasks = project.task_set.all()
+
     context = {
         'project': project,
-        'pending_tasks': pending_tasks,
-        'completed_tasks': completed_tasks,
+        'pending_tasks': tasks.exclude(status='done'),
+        'completed_tasks': tasks.filter(status='done'),
+        'is_owner': project.owner == request.user,
     }
-    return render(request, 'project_detail.html', context)
 
-def logout_view(request):
-    logout(request)
-    return redirect('login')
+    return render(request, 'core/project_detail.html', context)
+
+
+# 🔗 Join Project (via invite token)
+@login_required
+def join_project(request, token):
+    if request.method != 'POST':
+        messages.error(request, "Invalid request method.")
+        return redirect('dashboard')
+
+    project = get_object_or_404(Project, invite_token=token)
+
+    if project.members.filter(pk=request.user.pk).exists():
+        messages.info(request, "You are already a member of this project.")
+    else:
+        project.members.add(request.user)
+        messages.success(request, f"You joined {project.title}!")
+
+    return redirect('project_detail', project_id=project.id)
+
+
+# ➕ Create Project
+@login_required
+def create_project(request):
+    form = ProjectForm(request.POST or None)
+
+    if request.method == 'POST' and form.is_valid():
+        project = form.save(commit=False)
+        project.owner = request.user
+        project.invite_token = generate_unique_token()
+        project.save()
+
+        project.members.add(request.user)
+
+        messages.success(request, "Project created successfully!")
+        return redirect('dashboard')
+
+    return render(request, 'projects/create_project.html', {'form': form})

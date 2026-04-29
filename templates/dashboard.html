@@ -1,40 +1,172 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Dashboard | Project Management</title>
-    <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; background: #f0f2f5; }
-        nav { background: #343a40; color: white; padding: 1rem; display: flex; justify-content: space-between; }
-        .container { padding: 2rem; max-width: 1000px; margin: auto; }
-        .project-card { background: white; padding: 1.5rem; border-radius: 8px; margin-bottom: 1rem; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        .project-card h3 { margin-top: 0; color: #007bff; }
-        .btn { display: inline-block; padding: 8px 16px; background: #007bff; color: white; text-decoration: none; border-radius: 4px; }
-        .no-projects { text-align: center; color: #666; margin-top: 3rem; }
-    </style>
-</head>
-<body>
-    <nav>
-        <span>Project Management System</span>
-        <span>Welcome, {{ user.username }}!</span>
-    </nav>
+{% extends 'base.html' %}
+{% load static %}
 
-    <div class="container">
-        <h2>Your Projects</h2>
-        
-        {% if projects %}
-            {% for project in projects %}
-                <div class="project-card">
-                    <h3>{{ project.name }}</h3>
-                    <p>{{ project.description|truncatewords:20 }}</p>
-                    <a href="{% url 'project_detail' project.pk %}" class="btn">View Project & Tasks</a>
-                </div>
-            {% endfor %}
-        {% else %}
-            <div class="no-projects">
-                <p>You haven't been added to any projects yet.</p>
-                <p>Wait for an admin to invite you or create a project in the <a href="/admin">Admin Panel</a>.</p>
-            </div>
-        {% endif %}
+{% block title %}Dashboard - ProjectHub{% endblock %}
+
+{% block page_title %}Dashboard{% endblock %}
+
+{% block content %}
+  <!-- Welcome Section -->
+  <div class="welcome-section mb-4">
+    <h2>Welcome back, {{ user.first_name|default:user.username }}!</h2>
+    <p class="text-muted">Here's what's happening with your projects today.</p>
+  </div>
+
+  <!-- Stats Overview -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-label">Active Projects</div>
+      <div class="stat-value">{{ active_projects_count|default:0 }}</div>
+      <div class="stat-change positive">+2 this month</div>
     </div>
-</body>
-</html>
+    <div class="stat-card">
+      <div class="stat-label">Tasks Due Soon</div>
+      <div class="stat-value">{{ tasks_due_soon|default:0 }}</div>
+      <div class="stat-change">Next 7 days</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Completed Tasks</div>
+      <div class="stat-value">{{ completed_tasks|default:0 }}</div>
+      <div class="stat-change positive">+5 this week</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Team Members</div>
+      <div class="stat-value">{{ team_members|default:0 }}</div>
+      <div class="stat-change">Active this month</div>
+    </div>
+  </div>
+
+  <!-- My Projects Section -->
+  <div class="section-header d-flex justify-between align-center mb-3">
+    <h3>My Projects</h3>
+    <a href="{% url 'project_list' %}" class="btn btn-outline btn-sm">View All</a>
+  </div>
+  
+  <div class="project-grid mb-4">
+    {% for project in recent_projects %}
+      <a href="{% url 'project_detail' project.id %}" class="project-card">
+        <div class="project-card-header" data-color="{{ project.color|default:'blue' }}">
+          <div class="project-card-actions">
+            <button class="btn btn-ghost btn-icon btn-sm">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="white">
+                <path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+        <div class="project-card-body">
+          <h4 class="project-card-title">{{ project.name }}</h4>
+          <p class="project-card-description">{{ project.description|truncatechars:100 }}</p>
+          <div class="project-card-footer">
+            <div class="project-progress">
+              <div class="progress-bar">
+                <div class="progress-fill" style="width: {{ project.progress|default:0 }}%"></div>
+              </div>
+            </div>
+            <span class="badge badge-primary">{{ project.task_count }} tasks</span>
+          </div>
+        </div>
+      </a>
+    {% empty %}
+      <div class="empty-state">
+        <div class="empty-state-icon">📁</div>
+        <p>No projects yet. Create your first project to get started!</p>
+        <a href="{% url 'project_create' %}" class="btn btn-primary mt-2">Create Project</a>
+      </div>
+    {% endfor %}
+  </div>
+
+  <!-- My Tasks & Upcoming Deadlines -->
+  <div class="grid-2 mb-4">
+    <!-- My Tasks -->
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">My Tasks</h3>
+        <a href="{% url 'task_list' %}" class="btn btn-outline btn-sm">View All</a>
+      </div>
+      <div class="task-list">
+        {% for task in assigned_tasks %}
+          <div class="task-item d-flex align-center justify-between p-3 border-bottom">
+            <div class="d-flex align-center gap-2">
+              <input type="checkbox" class="task-checkbox" {% if task.status == 'done' %}checked{% endif %}>
+              <div>
+                <a href="{% url 'task_detail' task.id %}" class="task-title">{{ task.title }}</a>
+                <div class="task-meta d-flex gap-2 mt-1">
+                  <span class="badge badge-{{ task.priority|lower }}">{{ task.priority }}</span>
+                  <span class="badge badge-{{ task.status|lower }}">{{ task.status }}</span>
+                </div>
+              </div>
+            </div>
+            <span class="text-small text-muted">{{ task.due_date|date:"M d" }}</span>
+          </div>
+        {% empty %}
+          <div class="empty-state p-4">
+            <p class="text-muted">No tasks assigned to you.</p>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Upcoming Deadlines -->
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">Upcoming Deadlines</h3>
+        <button class="btn btn-ghost btn-icon btn-sm">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11z"/>
+          </svg>
+        </button>
+      </div>
+      <div class="deadline-list">
+        {% for task in upcoming_deadlines %}
+          <div class="deadline-item p-3 border-bottom">
+            <div class="d-flex justify-between align-start mb-1">
+              <a href="{% url 'task_detail' task.id %}" class="font-medium">{{ task.title }}</a>
+              <span class="badge {% if task.days_until <= 2 %}badge-danger{% elif task.days_until <= 5 %}badge-warning{% else %}badge-info{% endif %}">
+                {{ task.days_until }} days left
+              </span>
+            </div>
+            <div class="d-flex gap-3 text-small text-muted">
+              <span>{{ task.project.name }}</span>
+              <span>Due: {{ task.due_date|date:"M d, Y" }}</span>
+            </div>
+          </div>
+        {% empty %}
+          <div class="empty-state p-4">
+            <p class="text-muted">No upcoming deadlines.</p>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <!-- Recent Activity -->
+  <div class="card">
+    <div class="card-header">
+      <h3 class="card-title">Recent Activity</h3>
+    </div>
+    <div class="activity-list">
+      {% for activity in recent_activities %}
+        <div class="activity-item d-flex align-center gap-3 p-3 border-bottom">
+          <div class="avatar avatar-sm" style="background: {{ activity.user.profile.avatar_color|default:'var(--primary)' }};">
+            {{ activity.user.first_name|first|upper }}
+          </div>
+          <div class="flex-1">
+            <span class="font-medium">{{ activity.user.get_full_name }}</span>
+            <span class="text-muted">{{ activity.action }}</span>
+            <a href="{{ activity.link }}">{{ activity.target }}</a>
+            <div class="text-small text-muted">{{ activity.timestamp|timesince }} ago</div>
+          </div>
+        </div>
+      {% empty %}
+        <div class="empty-state p-4">
+          <p class="text-muted">No recent activity.</p>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/dashboard.js' %}"></script>
+{% endblock %}

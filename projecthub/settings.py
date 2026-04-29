@@ -37,24 +37,50 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
+
+    #Your apps
     'core',
     'projects',
-    'django.contrib.sites',
+    'tasks',
+    'accounts',
+    
+    #Allauth 
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
-    'allauth.socialaccount.providers.google', # For Google
+    'allauth.socialaccount.providers.github',
 ]
+
+# GitHub Specific Settings
+SOCIALACCOUNT_PROVIDERS = {
+    'github': {
+        'SCOPE': [
+            'user',
+            'repo',
+            'read:org',
+        ],
+        'VERIFIED_EMAIL': True,
+    }
+}
 
 SITE_ID = 1
 
-# Social Login Settings
-SOCIALACCOUNT_LOGIN_ON_GET = True # Skip the "Confirm Login" page
+#Authentication settings
+ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
+ACCOUNT_SIGNUP_FIELDS = ["username*", "email", "password1*", "password2*"]
+ACCOUNT_UNIQUE_EMAIL = True
+ACCOUNT_EMAIL_VERIFICATION = 'none'  # Change to 'mandatory' in production
 ACCOUNT_LOGOUT_ON_GET = True
 ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_UNIQUE_EMAIL = True
-ACCOUNT_USERNAME_REQUIRED = False
-ACCOUNT_AUTHENTICATION_METHOD = 'email'
+ACCOUNT_USERNAME_REQUIRED = True
+
+
+
+
+# Tell Django to use your Custom User Model
+AUTH_USER_MODEL = 'accounts.User'
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -67,7 +93,7 @@ MIDDLEWARE = [
     'allauth.account.middleware.AccountMiddleware',
 ]
 
-ROOT_URLCONF = 'core.urls'
+ROOT_URLCONF = 'projecthub.urls'
 
 TEMPLATES = [
     {
@@ -79,7 +105,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'django.template.context_processors.request',  # Add this line to include request in templates
+                'django.template.context_processors.debug',  # Add this line to include request in templates
             ],
         },
     },
@@ -90,7 +116,7 @@ AUTHENTICATION_BACKENDS = [
     'allauth.account.auth_backends.AuthenticationBackend',
 ]
 
-WSGI_APPLICATION = 'core.wsgi.application'
+WSGI_APPLICATION = 'projecthub.wsgi.application'
 
 
 # Database
@@ -142,9 +168,12 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
+# Use the names defined by the URL patterns
+LOGIN_URL = 'account_login'
+LOGIN_REDIRECT_URL = 'dashboard'
+LOGOUT_REDIRECT_URL = 'account_login'
+
 STATIC_URL = 'static/'
-LOGIN_REDIRECT_URL = 'dashboard'  # Redirect to dashboard after login
-LOGOUT_REDIRECT_URL = 'login'  # Redirect to login after logout
+STATICFILES_DIRS = [BASE_DIR / 'static']   # Redirect to login after logout
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
-LOGIN_URL = 'login'  # Redirect to login page if not authenticated
