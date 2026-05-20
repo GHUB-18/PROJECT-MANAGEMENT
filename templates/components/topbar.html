@@ -1,76 +1,120 @@
 {% load static %}
 
-<header class="bg-[#1e1e1e] border-b border-gray-800 h-16 fixed top-0 right-0 left-0 z-50 flex items-center justify-between px-4 select-none">
-  
+<header class="bg-white border-b border-gray-200 h-16 fixed top-0 right-0 left-0 z-50 flex items-center justify-between px-4 select-none shadow-sm">
+
+  <!-- Left -->
   <div class="flex items-center space-x-4">
-    <button id="sidebarToggle" 
-            class="p-2 rounded-full text-gray-400 hover:bg-gray-800 hover:text-white transition-colors focus:outline-none">
+
+    <button id="sidebarToggle"
+            class="p-2 rounded-full text-gray-500 hover:bg-indigo-50 hover:text-indigo-600 transition-colors focus:outline-none">
       <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M4 6h16M4 12h16M4 18h16"/>
       </svg>
     </button>
-    <span class="text-xl font-medium text-white tracking-wide font-sans">ProjectHub</span>
+
+    <span class="text-xl font-semibold text-indigo-600 tracking-wide">
+      ProjectHub
+    </span>
+
   </div>
 
+  <!-- Right -->
   <div class="flex items-center space-x-2">
-    
+
+    <!-- Notifications -->
     <div class="relative id-dropdown-context">
-      <button id="notificationsToggle" 
-              class="p-2 rounded-full text-gray-400 hover:bg-gray-800 hover:text-white transition-colors focus:outline-none relative">
+
+      <button id="notificationsToggle"
+              class="p-2 rounded-full text-gray-500 hover:bg-indigo-50 hover:text-indigo-600 transition-colors focus:outline-none relative">
+
         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 10-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 10-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
         </svg>
-        
+
         {% if notifications.count %}
-          <span class="absolute top-1.5 right-1.5 bg-red-500 text-white text-[10px] font-bold rounded-full min-w-4 h-4 flex items-center justify-center px-1 animate-pulse">
+          <span class="absolute top-1 right-1 bg-red-500 text-white text-[10px] font-bold rounded-full min-w-4 h-4 flex items-center justify-center px-1 animate-pulse">
             {{ notifications.count }}
           </span>
         {% endif %}
+
       </button>
 
-      <div id="notificationsDropdown" 
-           class="absolute right-0 mt-2 w-72 bg-[#28282a] border border-gray-800 rounded-lg shadow-xl hidden overflow-hidden z-50">
-        <div class="px-4 py-2.5 border-b border-gray-800 bg-[#1e1e1e]">
-          <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Notifications</span>
+      <!-- Dropdown -->
+      <div id="notificationsDropdown"
+           class="absolute right-0 mt-2 w-72 bg-white border border-gray-200 rounded-lg shadow-lg hidden overflow-hidden z-50">
+
+        <div class="px-4 py-2.5 border-b border-gray-100 bg-gray-50">
+          <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">
+            Notifications
+          </span>
         </div>
-        <div class="max-h-64 overflow-y-auto divide-y divide-gray-800/60">
+
+        <div class="max-h-64 overflow-y-auto divide-y divide-gray-100">
+
           {% for note in notifications %}
-            <a href="{{ note.link }}" class="block px-4 py-3 text-sm text-gray-300 hover:bg-gray-800 transition-colors">
-              <p class="line-clamp-2 leading-relaxed">{{ note.message }}</p>
-              <span class="text-[11px] text-gray-500 block mt-1">{{ note.created_at|timesince }} ago</span>
+            <a href="{{ note.link }}"
+               class="block px-4 py-3 text-sm text-gray-700 hover:bg-indigo-50 transition-colors">
+
+              <p class="line-clamp-2 leading-relaxed">
+                {{ note.message }}
+              </p>
+
+              <span class="text-[11px] text-gray-400 block mt-1">
+                {{ note.created_at|timesince }} ago
+              </span>
+
             </a>
           {% empty %}
-            <div class="px-4 py-6 text-center text-sm text-gray-500">
-              No new alerts pending
+            <div class="px-4 py-6 text-center text-sm text-gray-400">
+              No new notifications
             </div>
           {% endfor %}
+
         </div>
       </div>
     </div>
 
+    <!-- User Menu -->
     <div class="relative id-dropdown-context pl-2">
-      <button id="userMenuTrigger" 
-              class="w-8 h-8 rounded-full text-white font-bold text-sm flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-[#1e1e1e] transition-transform active:scale-95"
-              style="background: {{ user.profile.avatar_color|default:'#007b83' }};">
+
+      <button id="userMenuTrigger"
+              class="w-8 h-8 rounded-full text-white font-semibold text-sm flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-transform active:scale-95"
+              style="background: {{ user.profile.avatar_color|default:'#4f46e5' }};">
+
         {% if user.first_name %}
           {{ user.first_name|slice:":1"|upper }}
         {% else %}
           {{ user.username|slice:":1"|upper }}
         {% endif %}
+
       </button>
 
-      <div id="userDropdown" 
-           class="absolute right-0 mt-2 w-48 bg-[#28282a] border border-gray-800 rounded-lg shadow-xl hidden overflow-hidden z-50 divide-y divide-gray-800">
-        <div class="px-4 py-2.5 bg-[#1e1e1e] truncate">
-          <p class="text-xs text-gray-400">Signed in as</p>
-          <p class="text-sm font-medium text-white truncate mt-0.5">{{ user.username }}</p>
+      <!-- Dropdown -->
+      <div id="userDropdown"
+           class="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg hidden overflow-hidden z-50 divide-y divide-gray-100">
+
+        <div class="px-4 py-3 bg-gray-50 truncate">
+          <p class="text-xs text-gray-500">Signed in as</p>
+          <p class="text-sm font-medium text-gray-800 truncate mt-0.5">
+            {{ user.username }}
+          </p>
         </div>
+
         <div class="py-1">
-          <a href="#" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 transition-colors">My Profile</a>
+          <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50">
+            My Profile
+          </a>
         </div>
+
         <div class="py-1">
-          <a href="{% url 'account_logout' %}" class="block px-4 py-2 text-sm text-red-400 hover:bg-red-950/20 transition-colors">Logout</a>
+          <a href="{% url 'account_logout' %}"
+             class="block px-4 py-2 text-sm text-red-500 hover:bg-red-50">
+            Logout
+          </a>
         </div>
+
       </div>
     </div>
 
@@ -78,33 +122,34 @@
 </header>
 
 <script>
-  document.addEventListener('DOMContentLoaded', () => {
-    // Dropdown Toggles Engine
-    const setupDropdown = (triggerId, dropdownId) => {
-      const trigger = document.getElementById(triggerId);
-      const dropdown = document.getElementById(dropdownId);
-      
-      if (!trigger || !dropdown) return;
+document.addEventListener('DOMContentLoaded', () => {
 
-      trigger.addEventListener('click', (e) => {
-        e.stopPropagation();
-        // Close other open dropdown targets cleanly
-        document.querySelectorAll('.id-dropdown-context >= div').forEach(el => {
-          if (el !== dropdown) el.classList.add('hidden');
-        });
-        dropdown.classList.toggle('hidden');
-      });
-    };
+  const setupDropdown = (triggerId, dropdownId) => {
+    const trigger = document.getElementById(triggerId);
+    const dropdown = document.getElementById(dropdownId);
 
-    setupDropdown('notificationsToggle', 'notificationsDropdown');
-    setupDropdown('userMenuTrigger', 'userDropdown');
+    if (!trigger || !dropdown) return;
 
-    // Close any active sub-menus if a user clicks outside the interface options
-    document.addEventListener('click', (e) => {
-      if (!e.target.closest('.id-dropdown-context')) {
-        document.getElementById('notificationsDropdown')?.classList.add('hidden');
-        document.getElementById('userDropdown')?.classList.add('hidden');
-      }
+    trigger.addEventListener('click', (e) => {
+      e.stopPropagation();
+
+      // Close other dropdowns
+      document.querySelectorAll('.id-dropdown-context .dropdown-open')
+        .forEach(el => el.classList.remove('dropdown-open'));
+
+      dropdown.classList.toggle('hidden');
     });
+  };
+
+  setupDropdown('notificationsToggle', 'notificationsDropdown');
+  setupDropdown('userMenuTrigger', 'userDropdown');
+
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.id-dropdown-context')) {
+      document.getElementById('notificationsDropdown')?.classList.add('hidden');
+      document.getElementById('userDropdown')?.classList.add('hidden');
+    }
   });
+
+});
 </script>

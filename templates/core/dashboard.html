@@ -1,110 +1,164 @@
 {% extends 'base.html' %}
-<!-- {% load static %}
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Dashboard</title>
-    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
-</head>
-<body>
-
-<h1>Dashboard</h1>
-
-<div class="stats">
-    <div>Active Projects: {{ active_projects_count }}</div>
-    <div>Tasks Due Soon: {{ tasks_due_soon }}</div>
-    <div>Completed Tasks: {{ completed_tasks }}</div>
-</div>
-
-<h2>Your Projects</h2>
-<ul>
-    {% for project in recent_projects %}
-        <li>
-            <a href="{% url 'projects:project_detail' project.id %}">
-                {{ project.title }}
-            </a>
-        </li>
-    {% endfor %}
-</ul>
-
-</body>
-</html>
-
-
- -->
-
-
-
-
-
-
-
-
-
 
 {% block content %}
-<div class="container mx-auto px-4 py-8">
+
+<div class="container mx-auto px-4 py-8 bg-gray-50 min-h-screen">
+
+    <!-- Header -->
     <div class="flex justify-between items-center mb-8">
-        <h1 class="text-3xl font-bold text-gray-800">Welcome, {{ user.username }}</h1>
+        <h1 class="text-3xl font-bold text-gray-800">
+            Welcome, {{ user.username }}
+        </h1>
+
         {% if is_admin %}
-            <span class="bg-indigo-100 text-indigo-800 px-3 py-1 rounded-full text-sm font-semibold">Admin View</span>
+            <span class="bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full text-sm font-semibold">
+                Admin View
+            </span>
         {% endif %}
     </div>
 
+    <!-- Stats -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <div class="bg-white p-6 rounded-xl shadow-md border-l-4 border-blue-500">
-            <h3 class="text-gray-500 text-sm font-medium uppercase">Active Projects</h3>
-            <p class="text-2xl font-bold text-gray-900">{{ active_projects_count }}</p>
+
+        <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-indigo-500">
+            <h3 class="text-gray-500 text-sm font-medium uppercase">
+                Active Projects
+            </h3>
+            <p class="text-2xl font-bold text-gray-900">
+                {{ active_projects_count }}
+            </p>
         </div>
 
-        <div class="bg-white p-6 rounded-xl shadow-md border-l-4 border-yellow-500">
-            <h3 class="text-gray-500 text-sm font-medium uppercase">Tasks Due (7 Days)</h3>
-            <p class="text-2xl font-bold text-gray-900">{{ tasks_due_soon }}</p>
+        <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-indigo-400">
+            <h3 class="text-gray-500 text-sm font-medium uppercase">
+                Tasks Due (7 Days)
+            </h3>
+            <p class="text-2xl font-bold text-gray-900">
+                {{ tasks_due_soon }}
+            </p>
         </div>
 
-        <div class="bg-white p-6 rounded-xl shadow-md border-l-4 border-green-500">
+        <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-indigo-600">
+
             {% if is_admin %}
-                <h3 class="text-gray-500 text-sm font-medium uppercase">Total Members</h3>
-                <p class="text-2xl font-bold text-gray-900">{{ team_members }}</p>
+                <h3 class="text-gray-500 text-sm font-medium uppercase">
+                    Total Members
+                </h3>
+                <p class="text-2xl font-bold text-gray-900">
+                    {{ team_members }}
+                </p>
             {% else %}
-                <h3 class="text-gray-500 text-sm font-medium uppercase">Completed Tasks</h3>
-                <p class="text-2xl font-bold text-gray-900">{{ completed_tasks }}</p>
+                <h3 class="text-gray-500 text-sm font-medium uppercase">
+                    Completed Tasks
+                </h3>
+                <p class="text-2xl font-bold text-gray-900">
+                    {{ completed_tasks }}
+                </p>
             {% endif %}
+
         </div>
     </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <div class="bg-white rounded-xl shadow-md p-6">
-            <h2 class="text-xl font-bold mb-4 border-b pb-2 text-gray-700">Recent Projects</h2>
-            <div class="space-y-4">
-                {% for project in recent_projects %}
-                    <a href="{% url 'projects:project_detail' project_id=project_item.id %}" class="block p-4 hover:bg-gray-50 rounded-lg border transition">
-                        <div class="flex justify-between items-center">
-                            <span class="font-semibold text-blue-600">{{ project.title }}</span>
-                            <span class="text-xs text-gray-400">{{ project.created_at|date:"M d" }}</span>
+    <!-- Due Soon -->
+    <div class="bg-white border border-gray-200 rounded-lg p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 shadow-sm mb-6">
+        <div>
+            <h2 class="text-gray-800 text-lg font-semibold">
+                Due Soon
+            </h2>
+
+            <p class="text-sm text-gray-500 mt-1">
+                No work coming up immediately
+            </p>
+        </div>
+
+        <a href="#" class="text-indigo-600 hover:text-indigo-500 text-sm font-medium">
+            View To-do List
+        </a>
+    </div>
+
+    <!-- Projects Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+
+        {% for project in projects %}
+
+            {% if project.id %}
+
+                <div class="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition duration-200 relative group flex flex-col justify-between h-44 p-4">
+
+                    <!-- Soft indigo glow background -->
+                    <div class="absolute inset-0 bg-gradient-to-br from-indigo-50 to-gray-50 z-0 pointer-events-none"></div>
+
+                    <!-- Top -->
+                    <div class="z-10 flex justify-between items-start">
+
+                        <div class="min-w-0 pr-4">
+
+                            <a href="{% url 'projects:project_detail' project.id %}"
+                               class="block group-hover:underline">
+
+                                <span class="font-semibold text-indigo-600 text-base block truncate">
+                                    {{ project.name }}
+                                </span>
+
+                            </a>
+
+                            {% if project.department %}
+                                <p class="text-xs text-gray-500 mt-0.5 truncate">
+                                    {{ project.department }}
+                                </p>
+                            {% endif %}
+
                         </div>
-                    </a>
-                {% empty %}
-                    <p class="text-gray-500 italic">No projects found.</p>
-                {% endfor %}
-            </div>
-        </div>
 
-        <div class="bg-white rounded-xl shadow-md p-6">
-            <h2 class="text-xl font-bold mb-4 border-b pb-2 text-gray-700">Your Tasks</h2>
-            <div class="space-y-3">
-                {% for task in assigned_tasks %}
-                    <div class="flex items-center justify-between p-3 border-b last:border-0">
-                        <span class="text-gray-800">{{ task.title }}</span>
-                        <span class="px-2 py-1 text-xs rounded {% if task.status == 'in_progress' %}bg-blue-100 text-blue-800{% else %}bg-gray-100 text-gray-600{% endif %}">
-                            {{ task.status|title }}
-                        </span>
                     </div>
-                {% empty %}
-                    <p class="text-gray-500 italic">No pending tasks.</p>
-                {% endfor %}
+
+                    <!-- Bottom -->
+                    <div class="z-10 flex justify-between items-center mt-auto">
+
+                        <p class="text-xs text-gray-500 truncate font-medium">
+                            {{ project.owner.get_full_name|default:project.owner.username }}
+                        </p>
+
+                        <span class="text-[10px] text-gray-400 font-mono">
+                            {{ project.created_at|date:"M d" }}
+                        </span>
+
+                    </div>
+
+                </div>
+
+            {% endif %}
+
+        {% empty %}
+
+            <div class="text-center py-12 border border-dashed border-gray-300 rounded-xl col-span-full">
+                <p class="text-gray-500 text-sm">
+                    No projects found.
+                </p>
             </div>
-        </div>
+
+        {% endfor %}
+
     </div>
+
+    <!-- Floating Create Button -->
+    <div class="fixed bottom-6 right-6 z-50">
+
+        <a href="{% url 'projects:create_project' %}"
+           class="w-14 h-14 bg-indigo-600 hover:bg-indigo-500 text-white rounded-full flex items-center justify-center shadow-lg transition transform hover:scale-105 active:scale-95">
+
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2.5"
+                      d="M12 4v16m8-8H4">
+                </path>
+            </svg>
+
+        </a>
+
+    </div>
+
 </div>
-{% endblock %}
+
+{% endblock content %}

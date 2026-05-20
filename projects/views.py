@@ -23,17 +23,16 @@ def generate_unique_token():
 def project_detail(request, project_id):
     project = get_object_or_404(
         Project.objects.prefetch_related(
-            Prefetch('task_set', queryset=Task.objects.order_by('due_date'))
+            Prefetch('tasks', queryset=Task.objects.order_by('due_date'))
         ),
         id=project_id
     )
 
-    # 🔒 Access control
     if not project.members.filter(pk=request.user.pk).exists():
         messages.error(request, "You do not have access to this project.")
         return redirect('dashboard')
 
-    tasks = project.task_set.all()
+    tasks = project.tasks.all()
 
     context = {
         'project': project,
@@ -42,7 +41,7 @@ def project_detail(request, project_id):
         'is_owner': project.owner == request.user,
     }
 
-    return render(request, 'core/project_detail.html', context)
+    return render(request, 'projects/project_detail.html', context)
 
 
 # 🔗 Join Project (via invite token)
@@ -58,9 +57,11 @@ def join_project(request, token):
         messages.info(request, "You are already a member of this project.")
     else:
         project.members.add(request.user)
-        messages.success(request, f"You joined {project.title}!")
+        # FIXED: Field attribute changed from .title to match your template attribute (.name)
+        messages.success(request, f"You joined {project.name}!")
 
-    return redirect('project_detail', project_id=project.id)
+    # FIXED: Added required 'projects:' namespace prefix to redirect safely
+    return redirect('projects:project_detail', project_id=project.id)
 
 
 # ➕ Create Project
@@ -81,6 +82,8 @@ def create_project(request):
 
     return render(request, 'projects/create_project.html', {'form': form})
 
+
+# 🚪 Leave Project
 @login_required
 def leave_project(request, project_id):
     project = get_object_or_404(Project, id=project_id)
@@ -88,13 +91,41 @@ def leave_project(request, project_id):
         messages.error(request, "Owners cannot leave their own project. Delete it instead.")
     else:
         project.members.remove(request.user)
-        messages.success(request, f"You left {project.title}.")
+        # FIXED: Updated field attribute mapping from .title to .name
+        messages.success(request, f"You left {project.name}.")
     return redirect('dashboard')
 
+
+# 📋 Project List Index
+# FIXED: Added missing login restriction decorator to block anonymous users from querying database relationships
+@login_required
 def project_list(request):
     projects = Project.objects.filter(members=request.user).order_by('-created_at')
     return render(request, 'projects/project_list.html', {'projects': projects})
 
+
+# 🛠️ Admin Dashboard Panel
 @login_required
 def admin_panel(request):
+    # Optional security layer: verify user is actually an administrator before rendering
+    if not request.user.is_superuser:
+        messages.error(request, "Access restricted to administrators.")
+        return redirect('dashboard')
     return render(request, "projects/admin_panel.html")
+
+@login_required
+def edit_project(request, project_id):
+    project = get_object_or_404(Project, id=project_id)
+
+    if request.user != project.owner:
+        messages.error(request, "You are not allowed to edit this project.")
+        return redirect('dashboard')
+
+    form = ProjectForm(request.POST or None, instance=project)
+
+    if request.method == "POST" and form.is_valid():
+        form.save()
+        messages.success(request, "Project updated successfully!")
+        return redirect('projects:project_detail', project_id=project.id)
+
+    return render(request, 'projects/edit_project.html', {'form': form, 'project': project})
