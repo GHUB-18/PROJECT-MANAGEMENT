@@ -1,19 +1,100 @@
-{% extends "base.html" %}
+<!-- {% load static %}
+{% load socialaccount %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Join ProjectHub</title>
+    <link rel="stylesheet" href="{% static 'core/css/auth.css' %}">
+</head>
+<body>
 
-{% block content %}
-<div class="max-w-md mx-auto mt-10">
-    <h2>Sign Up</h2>
+<div class="container">
+    <div class="auth-box">
+        <h2>Welcome to ProjectHub</h2>
+        <p>To join the project management dashboard, please connect your GitHub account.</p> -->
 
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
+        <!-- The only way in: GitHub OAuth -->
+        <!-- <a href="{% provider_login_url 'github' %}" class="github-btn">
+            <img src="{% static 'core/img/github-icon.svg' %}" alt="" class="btn-icon">
+            Continue with GitHub
+        </a>
 
-        <button type="submit">Create Account</button>
-    </form>
-
-    <p>
-        Already have an account?
-        <a href="{% url 'account_login' %}">Login</a>
-    </p>
+        <div class="footer-note">
+            <p>New to coding? <a href="https://github.com/join" target="_blank">Create a GitHub account first</a>.</p>
+        </div>
+    </div>
 </div>
-{% endblock %}
+
+</body>
+</html> -->
+
+
+{% load static %}
+{% load socialaccount %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>Join ProjectHub</title>
+
+    <link rel="stylesheet" href="{% static 'core/css/auth.css' %}">
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="auth-box">
+
+        <div class="logo-area">
+            <h2>Welcome to ProjectHub</h2>
+
+            <p class="subtitle">
+                Connect your GitHub account to access the project management dashboard.
+            </p>
+        </div>
+
+        <!-- GitHub OAuth Login -->
+        <a href="{% provider_login_url 'github' %}" class="github-btn">
+
+            <img 
+                src="{% static 'core/img/github-icon.svg' %}" 
+                alt="GitHub Logo"
+                class="btn-icon"
+            >
+
+            <span>Continue with GitHub</span>
+
+        </a>
+
+        <div class="divider">
+            <span>Secure OAuth Authentication</span>
+        </div>
+
+        <div class="footer-note">
+
+            <p>
+                New to coding?
+                <a 
+                    href="https://github.com/join"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
+                    Create a GitHub account
+                </a>
+                first.
+            </p>
+
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>

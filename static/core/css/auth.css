@@ -1,0 +1,165 @@
+/* Container */
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: #f9fafb;
+}
+
+/* Auth Box */
+.auth-box {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+  max-width: 400px;
+  width: 100%;
+  text-align: center;
+}
+
+.auth-box h2 {
+  margin-bottom: 0.5rem;
+  color: #111827;
+}
+
+.auth-box p {
+  margin-bottom: 1.5rem;
+  color: #6b7280;
+}
+
+/* GitHub Button */
+.github-btn {
+  display: block;
+  background: #24292f;
+  color: #fff;
+  padding: 0.75rem;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: 500;
+  margin-bottom: 1rem;
+  transition: background 0.2s ease;
+}
+
+.github-btn:hover {
+  background: #000;
+}
+
+/* Divider */
+.divider {
+  margin: 1rem 0;
+  font-size: 0.9rem;
+  color: #9ca3af;
+  position: relative;
+}
+
+.divider::before,
+.divider::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 40%;
+  height: 1px;
+  background: #e5e7eb;
+}
+
+.divider::before {
+  left: 0;
+}
+
+.divider::after {
+  right: 0;
+}
+
+/* Form */
+form {
+  text-align: left;
+}
+
+form p {
+  margin-bottom: 1rem;
+}
+
+form input {
+  width: 100%;
+  padding: 0.6rem;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  margin-top: 0.3rem;
+}
+
+.btn {
+  display: block;
+  width: 100%;
+  background: #4f46e5;
+  color: #fff;
+  padding: 0.75rem;
+  border-radius: 6px;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.btn:hover {
+  background: #4338ca;
+}
+
+/* Switch Link */
+.switch {
+  margin-top: 1rem;
+  font-size: 0.9rem;
+  color: #6b7280;
+}
+
+.switch a {
+  color: #4f46e5;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.switch a:hover {
+  text-decoration: underline;
+}
+
+
+.github-btn {
+    background-color: #24292e;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: background 0.3s ease;
+}
+
+.github-btn:hover {
+    background-color: #444;
+}
+
+.divider {
+    text-align: center;
+    margin: 20px 0;
+    position: relative;
+}
+/* Optional: horizontal lines for the OR divider */
+.divider::before, .divider::after {
+    content: "";
+    height: 1px;
+    width: 30%;
+    background: #ddd;
+    display: inline-block;
+    vertical-align: middle;
+    margin: 0 10px;
+}
+
+
+.form-row {
+    display: flex;
+    gap: 15px;
+}
+.form-row .form-group {
+    flex: 1;
+}

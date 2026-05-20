@@ -1,22 +1,51 @@
+# accounts/models.py
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+
 
 class User(AbstractUser):
-    """
-    Custom User model to handle profile pictures and roles 
-    as seen in the ProjectHub UI designs.
-    """
+
     profile_picture = models.ImageField(
-        upload_to='profile_pics/', 
-        null=True, 
+        upload_to='profiles/',
+        null=True,
         blank=True
     )
+
     job_title = models.CharField(
-        max_length=100, 
-        null=True, 
-        blank=True, 
-        help_text="e.g. UI/UX Designer or Backend Developer"
+        max_length=100,
+        null=True,
+        blank=True
     )
+
+    # ONBOARDING SYSTEM
+    is_onboarded = models.BooleanField(default=False)
+
+    onboarding_step = models.PositiveIntegerField(default=1)
 
     def __str__(self):
         return self.username
+
+
+class Profile(models.Model):
+
+    user = models.OneToOneField(
+        User,
+        on_delete=models.CASCADE,
+        related_name='profile'
+    )
+
+    github_username = models.CharField(max_length=100, blank=True)
+
+    github_url = models.URLField(max_length=200, blank=True)
+
+    bio = models.TextField(blank=True)
+
+    def __str__(self):
+        return f"{self.user.username}'s Profile"
+
+@receiver(post_save, sender=User)
+def create_profile(sender, instance, created, **kwargs):
+    if created:
+        Profile.objects.create(user=instance)

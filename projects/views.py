@@ -80,3 +80,21 @@ def create_project(request):
         return redirect('dashboard')
 
     return render(request, 'projects/create_project.html', {'form': form})
+
+@login_required
+def leave_project(request, project_id):
+    project = get_object_or_404(Project, id=project_id)
+    if request.user == project.owner:
+        messages.error(request, "Owners cannot leave their own project. Delete it instead.")
+    else:
+        project.members.remove(request.user)
+        messages.success(request, f"You left {project.title}.")
+    return redirect('dashboard')
+
+def project_list(request):
+    projects = Project.objects.filter(members=request.user).order_by('-created_at')
+    return render(request, 'projects/project_list.html', {'projects': projects})
+
+@login_required
+def admin_panel(request):
+    return render(request, "projects/admin_panel.html")

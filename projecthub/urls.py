@@ -14,16 +14,33 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+# projecthub/urls.py
 from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from core import views
+from accounts import views as accounts_views
+from projects import views as project_views
+from tasks import views as task_views
+from notifications.views import unread_count
+from notifications.views import notifications_list
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('core.urls')),
-    path('tasks/', include('tasks.urls')),
-    path('project/<int:project_id>/', include('projects.urls')), # Include the URLs from the projects app
+
+    path('', views.index, name='index'),
+    path('dashboard/', views.dashboard, name='dashboard'),
+
+    path('onboarding/', accounts_views.onboarding_view, name='onboarding'),
+
+    path('projects/', include('projects.urls'), name='projects'),
+
+    path('tasks/', include('tasks.urls', namespace='tasks')),
     path('accounts/', include('allauth.urls')),
-    # path('profile/', include('accounts.urls')),
+    path('', accounts_views.auth_redirect, name="home"),
+
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

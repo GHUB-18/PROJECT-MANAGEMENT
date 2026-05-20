@@ -9,6 +9,14 @@ from tasks.models import Task
 
 User = get_user_model()
 
+def index(request):
+    if request.user.is_authenticated:
+        # If logged in, send them to the dashboard or main app
+        return redirect('dashboard') 
+    else:
+        # If guest, show them the signup/login page
+        return render(request, 'account/signup.html')
+
 @login_required
 def dashboard(request):
     user = request.user
@@ -58,3 +66,15 @@ def admin_panel(request):
         'total_projects': projects.count(),
         'active_projects': projects.filter(status='active').count(),
     })
+
+@login_required
+def project_list(request):
+    # Get all projects where the user is a member
+    projects = Project.objects.filter(members=request.user).order_by('-created_at')
+    return render(request, 'projects/project_list.html', {'projects': projects})
+
+@login_required
+def task_list(request):
+    # Get all tasks assigned to the user
+    tasks = Task.objects.filter(assigned_to=request.user).order_by('due_date')
+    return render(request, 'tasks/task_list.html', {'tasks': tasks})

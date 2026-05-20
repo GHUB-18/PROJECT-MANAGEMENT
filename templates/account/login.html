@@ -1,19 +1,41 @@
+<!-- accounts/login.html -->
 {% extends "base.html" %}
+{% load static %}
+{% load socialaccount %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'core/css/auth.css' %}">
+{% endblock %}
 
 {% block content %}
-<div class="max-w-md mx-auto mt-10">
-    <h2>Login</h2>
 
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
+{% if user.is_authenticated %}
+    <script>
+        window.location.href = "{% url 'dashboard' %}";
+    </script>
+{% endif %}
 
-        <button type="submit">Login</button>
-    </form>
+<div class="container">
+  <div class="auth-box">
+    <h2>Welcome Back</h2>
 
-    <p>
-        No account?
-        <a href="{% url 'account_signup' %}">Sign up</a>
-    </p>
+    <p>Sign in securely with GitHub to access your workspace and projects.</p>
+
+    <a href="{% provider_login_url 'github' %}" class="github-btn" id="githubBtn">
+       <img src="{% static 'core/img/github-icon.svg' %}" class="btn-icon">
+       Continue with GitHub
+    </a>
+
+    <div class="footer-note">
+      <p>Secure authentication powered by GitHub OAuth.</p>
+    </div>
+  </div>
 </div>
+
+<script>
+document.getElementById("githubBtn").addEventListener("click", function () {
+    this.innerHTML = "Redirecting to GitHub...";
+});
+</script>
+
 {% endblock %}

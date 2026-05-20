@@ -1,0 +1,21 @@
+<h2>Onboarding Step {{ step }}</h2>
+
+<form method="post">
+    {% csrf_token %}
+    <input type="hidden" name="step" value="{{ step }}">
+
+    {% if step == 1 %}
+        <input name="first_name" placeholder="First name" required>
+        <input name="last_name" placeholder="Last name" required>
+        <input name="job_title" placeholder="Job title" required>
+
+    {% elif step == 2 %}
+        <input name="github_username" placeholder="GitHub username">
+        <input name="github_url" placeholder="GitHub URL">
+
+    {% elif step == 3 %}
+        <h3>You're all set 🎉</h3>
+    {% endif %}
+
+    <button type="submit">Continue</button>
+</form>

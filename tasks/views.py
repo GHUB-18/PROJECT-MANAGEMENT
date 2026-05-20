@@ -71,3 +71,9 @@ def toggle_task_status(request, task_id):
     return render(request, "tasks/confirm_complete.html", {
         "task": task
     })
+
+@login_required
+def task_list(request, project_id):
+    # Get all tasks assigned to the user
+    tasks = Task.objects.filter(assigned_to=request.user).order_by('-created_at')
+    return render(request, 'tasks/task_list.html', {'tasks': tasks})

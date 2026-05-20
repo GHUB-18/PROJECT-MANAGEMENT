@@ -21,7 +21,8 @@ from django.conf.urls.static import static
 from . import views
 
 urlpatterns = [
-    path('', views.dashboard, name='dashboard'),
+    path('', views.index, name='index'),
+    path('dashboard/', views.dashboard, name='dashboard'),
     path('admin-panel/', views.admin_panel, name='admin_panel'),
     path('accounts/', include('allauth.urls')),
     path('', include('projects.urls')), # Include the URLs from the projects app

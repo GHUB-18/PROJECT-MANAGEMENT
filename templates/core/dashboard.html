@@ -1,4 +1,46 @@
 {% extends 'base.html' %}
+<!-- {% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+</head>
+<body>
+
+<h1>Dashboard</h1>
+
+<div class="stats">
+    <div>Active Projects: {{ active_projects_count }}</div>
+    <div>Tasks Due Soon: {{ tasks_due_soon }}</div>
+    <div>Completed Tasks: {{ completed_tasks }}</div>
+</div>
+
+<h2>Your Projects</h2>
+<ul>
+    {% for project in recent_projects %}
+        <li>
+            <a href="{% url 'projects:project_detail' project.id %}">
+                {{ project.title }}
+            </a>
+        </li>
+    {% endfor %}
+</ul>
+
+</body>
+</html>
+
+
+ -->
+
+
+
+
+
+
+
+
+
 
 {% block content %}
 <div class="container mx-auto px-4 py-8">
@@ -36,7 +78,7 @@
             <h2 class="text-xl font-bold mb-4 border-b pb-2 text-gray-700">Recent Projects</h2>
             <div class="space-y-4">
                 {% for project in recent_projects %}
-                    <a href="{% url 'project_detail' project.id %}" class="block p-4 hover:bg-gray-50 rounded-lg border transition">
+                    <a href="{% url 'projects:project_detail' project_id=project_item.id %}" class="block p-4 hover:bg-gray-50 rounded-lg border transition">
                         <div class="flex justify-between items-center">
                             <span class="font-semibold text-blue-600">{{ project.title }}</span>
                             <span class="text-xs text-gray-400">{{ project.created_at|date:"M d" }}</span>

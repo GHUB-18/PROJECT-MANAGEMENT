@@ -1,8 +1,7 @@
 from django.db import models
-from projects.models import Project
+from django.conf import settings
 from django.core.exceptions import ValidationError
-from django.contrib.auth import get_user_model
-User = get_user_model()
+
 
 class Task(models.Model):
     STATUS_CHOICES = [
@@ -17,11 +16,10 @@ class Task(models.Model):
         ('high', 'High'),
     ]
 
-
     title = models.CharField(max_length=255)
     description = models.TextField(blank=True)
     assigned_to = models.ForeignKey(
-        User,
+        settings.AUTH_USER_MODEL,
         on_delete=models.SET_NULL,
         null=True,
         blank=True,

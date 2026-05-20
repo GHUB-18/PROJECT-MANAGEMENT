@@ -25,7 +25,7 @@
             {% endfor %}
 
             <div class="flex items-center justify-end gap-4 pt-4 border-t">
-                <a href="{% url 'project_detail' project.id %}" class="text-gray-400 hover:text-gray-600 font-medium">Cancel</a>
+                <a href="{% url 'projects:project_detail' project_id=project_item.id %}" class="text-gray-400 hover:text-gray-600 font-medium">Cancel</a>
                 <button type="submit" class="bg-indigo-600 text-white px-8 py-3 rounded-xl font-bold hover:bg-indigo-700 shadow-lg transition-all">
                     Create Task
                 </button>
