@@ -25,7 +25,7 @@ urlpatterns = [
     path('dashboard/', views.dashboard, name='dashboard'),
     path('admin-panel/', views.admin_panel, name='admin_panel'),
     path('accounts/', include('allauth.urls')),
-    path('', include('projects.urls')), # Include the URLs from the projects app
+    path('projects/', include('projects.urls')), # Include the URLs from the projects app
 ]
 
 if settings.DEBUG:

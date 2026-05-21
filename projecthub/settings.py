@@ -181,7 +181,7 @@ LOGIN_URL = 'index'
 LOGIN_REDIRECT_URL = '/auth-redirect/'  
 LOGOUT_REDIRECT_URL = 'index'
 AUTH_USER_MODEL = 'accounts.User'
-STATIC_URL = '/static/'
+STATIC_URL = 'static/'
 STATICFILES_DIRS = [
     BASE_DIR / 'static'
     ]   # Redirect to login after logout

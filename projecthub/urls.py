@@ -21,25 +21,15 @@ from django.conf import settings
 from django.conf.urls.static import static
 from core import views
 from accounts import views as accounts_views
-from projects import views as project_views
-from tasks import views as task_views
-from notifications.views import unread_count
-from notifications.views import notifications_list
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-
-    path('', views.index, name='index'),
+    path('', accounts_views.auth_redirect, name="home"), # FIXED: Empty string
     path('dashboard/', views.dashboard, name='dashboard'),
-
     path('onboarding/', accounts_views.onboarding_view, name='onboarding'),
-
-    path('projects/', include('projects.urls'), name='projects'),
-
-    path('tasks/', include('tasks.urls', namespace='tasks')),
+    path('projects/', include('projects.urls')),
+    path('tasks/', include('tasks.urls')),
     path('accounts/', include('allauth.urls')),
-    path('', accounts_views.auth_redirect, name="home"),
-
 ]
 
 if settings.DEBUG:

@@ -1,6 +1,7 @@
 # accounts/views.py
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
+from.models import Profile
 from django.contrib.auth import get_user_model
 
 User = get_user_model()
@@ -31,7 +32,8 @@ def onboarding_view(request):
         # STEP 2
         elif step == 2:
 
-            profile = user.profile
+            # Get the profile if it exists, or create a blank one if it doesn't!
+            profile, created = Profile.objects.get_or_create(user=user)
 
             profile.github_username = request.POST.get(
                 "github_username", ""
@@ -58,7 +60,7 @@ def onboarding_view(request):
 
         return redirect("onboarding")
 
-    return render(request, "accounts/onboarding.html", {
+    return render(request, "account/onboarding.html", {
         "step": user.onboarding_step
     })
 
