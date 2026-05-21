@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="section-header d-flex justify-between align-center mb-4">
+    <h2>All Projects</h2>
+    <a href="{% url 'create_project' %}" class="btn btn-primary">Create New</a>
+</div>
+
+<div class="project-grid">
+    {% for project in projects %}
+        <div class="project-card">
+            <div class="project-card-body">
+                <h4><a href="{% url 'projects:project_detail' project_id=project_item.id %}">{{ project.name }}</a></h4>
+                <p>{{ project.description|truncatechars:150 }}</p>
+                <div class="project-meta">
+                    <span class="badge">{{ project.members.count }} Members</span>
+                </div>
+            </div>
+        </div>
+    {% empty %}
+        <p>No projects found.</p>
+    {% endfor %}
+</div>
+{% endblock %}

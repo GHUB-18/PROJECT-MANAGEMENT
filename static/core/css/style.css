@@ -1,0 +1,177 @@
+/* --- 1. Variables & Global Styles --- */
+:root {
+    --primary: #4f46e5;
+    --urgent: #ef4444;
+    --pending: #f59e0b;
+    --completed: #10b981;
+    --bg-gray: #f9fafb;
+    --text-main: #1f2937;
+    --text-muted: #6b7280;
+    --border-light: #e5e7eb;
+}
+
+body {
+    background-color: var(--bg-gray);
+    font-family: 'Inter', sans-serif;
+    color: var(--text-main);
+    margin: 0;
+}
+
+/* --- 2. Layout Components --- */
+.topbar {
+    height: 64px;
+    background: #ffffff;
+    border-bottom: 1px solid var(--border-light);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 1.5rem;
+    position: sticky;
+    top: 0;
+    z-index: 50; /* Keep high enough for dropdowns but below modals */
+}
+
+main {
+    position: relative;
+    z-index: 1;
+    padding: 2rem;
+}
+
+/* Sidebar Styling */
+.sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+    gap: 0.5rem;
+}
+
+.nav-section-title {
+    font-size: 0.7rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin: 1rem 0 0.5rem 1rem;
+}
+
+.nav-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    border-radius: 0.75rem;
+    color: #9ca3af;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.nav-item:hover {
+    background-color: #1f2937;
+    color: #ffffff;
+}
+
+.nav-item.active {
+    background-color: var(--primary);
+    color: #ffffff;
+}
+
+/* --- 3. Form & Interactive Elements --- */
+form {
+    position: relative;
+}
+
+/* Unified Input Styling - Fixes the 'Invisible' boxes */
+input, textarea, select, .form-input {
+    display: block;
+    width: 100%;
+    padding: 0.75rem 1rem;
+    font-size: 0.95rem;
+    color: #111827 !important;
+    background-color: #ffffff !important;
+    border: 1px solid #d1d5db !important;
+    border-radius: 0.5rem;
+    margin-top: 0.25rem;
+    margin-bottom: 1rem;
+    transition: all 0.2s ease;
+    pointer-events: all !important;
+    cursor: text !important;
+}
+
+input:focus, select:focus, textarea:focus {
+    outline: none;
+    border-color: var(--primary) !important;
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+
+label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #374151;
+}
+
+/* --- 4. Buttons & Badges --- */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem 1.25rem;
+    border-radius: 0.6rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: none;
+    pointer-events: all !important;
+}
+
+.btn-primary {
+    background-color: var(--primary);
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #4338ca;
+    transform: translateY(-1px);
+}
+
+.btn-ghost {
+    background: transparent;
+    color: var(--text-muted);
+}
+
+/* Task Cards */
+.task-card {
+    background: white;
+    padding: 1rem;
+    border-radius: 1rem;
+    border-left: 4px solid var(--border-light);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.task-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.badge {
+    padding: 2px 8px;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.badge-urgent { background: #fee2e2; color: var(--urgent); }
+.badge-pending { background: #fef3c7; color: var(--pending); }
+.badge-done { background: #d1fae5; color: var(--completed); }
+
+.avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--primary);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+}

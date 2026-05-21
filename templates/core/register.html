@@ -1,0 +1,49 @@
+{% load static %}
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register | ProjectSys</title>
+
+```
+
+<link rel="stylesheet" href="{% static 'core/auth.css' %}">
+```
+
+</head>
+<body>
+
+<div class="container">
+
+```
+<div class="auth-box">
+    <h2>Welcome to ProjectSys</h2>
+    <p>Create an account or continue with GitHub</p>
+
+    <!-- GitHub Login -->
+    <a href="/accounts/github/login/" class="github-btn">
+        Continue with GitHub
+    </a>
+
+    <div class="divider">OR</div>
+
+    <!-- Manual Register (optional) -->
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn">Register</button>
+    </form>
+
+    <p class="switch">
+        Already have an account? 
+        <a href="/accounts/login/">Login</a>
+    </p>
+</div>
+```
+
+</div>
+
+</body>
+</html>

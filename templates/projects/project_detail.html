@@ -1,0 +1,186 @@
+{% extends 'base.html' %}
+
+{% block page_title %}{{ project.name }}{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8 bg-gray-50 min-h-screen">
+
+    <!-- Header -->
+    <div class="flex justify-between items-start mb-6">
+
+        <div>
+            <p class="text-sm text-gray-500 mb-1">
+                Created by {{ project.owner.get_full_name|default:project.owner.username }}
+            </p>
+
+            <div class="flex items-center gap-3">
+                <span class="px-2 py-1 text-xs rounded-full bg-indigo-100 text-indigo-700">
+                    {{ project.members.count }} Members
+                </span>
+
+                <span class="text-xs text-gray-400">
+                    Created {{ project.created_at|date:"M d, Y" }}
+                </span>
+            </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="flex gap-2">
+
+            {% if is_owner %}
+                <a href="{% url 'projects:edit_project' project.id %}"
+                   class="px-3 py-1.5 text-sm border border-gray-300 rounded-md hover:bg-gray-100">
+                    Edit
+                </a>
+
+                <button onclick="confirmDelete()"
+                        class="px-3 py-1.5 text-sm text-red-500 hover:bg-red-50 rounded-md">
+                    Delete
+                </button>
+
+            {% else %}
+
+                <form action="{% url 'projects:leave_project' project.id %}"
+                      method="POST"
+                      onsubmit="return confirm('Are you sure?');">
+                    {% csrf_token %}
+                    <button type="submit"
+                            class="px-3 py-1.5 text-sm text-red-500 border border-red-200 rounded-md hover:bg-red-50">
+                        Leave
+                    </button>
+                </form>
+
+            {% endif %}
+
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+
+        <!-- Invite -->
+        {% if is_owner %}
+        <div class="lg:col-span-3 bg-white border border-gray-200 rounded-lg p-4">
+
+            <label class="block text-sm font-semibold text-gray-700 mb-2">
+                Invite Team Members
+            </label>
+
+            <div class="flex gap-2">
+
+                <input type="text"
+                       readonly
+                       id="inviteLink"
+                       value="{{ request.get_host }}{% url 'projects:join_project' project.invite_token %}"
+                       class="flex-1 px-3 py-2 border border-gray-300 rounded-md text-sm bg-gray-50">
+
+                <button onclick="copyInvite()"
+                        class="px-3 py-2 bg-indigo-600 text-white rounded-md text-sm hover:bg-indigo-500">
+                    Copy
+                </button>
+
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Pending Tasks -->
+        <div class="lg:col-span-2 bg-white border border-gray-200 rounded-lg">
+
+            <div class="flex justify-between items-center p-4 border-b border-gray-100">
+                <h3 class="font-semibold text-gray-800">Pending Tasks</h3>
+                <a href="#" class="text-sm text-indigo-600 hover:text-indigo-500">+ New Task</a>
+            </div>
+
+            <div class="divide-y divide-gray-100">
+
+                {% for task in pending_tasks %}
+                    <div class="p-4 flex justify-between items-center">
+
+                        <div>
+                            <p class="font-medium text-gray-800">
+                                {{ task.title }}
+                            </p>
+
+                            <p class="text-xs text-gray-400">
+                                Due {{ task.due_date|date:"M d" }}
+                            </p>
+                        </div>
+
+                        <span class="text-xs px-2 py-1 rounded-full bg-gray-100 text-gray-600">
+                            {{ task.priority }}
+                        </span>
+
+                    </div>
+                {% empty %}
+                    <div class="p-6 text-center text-gray-400 text-sm">
+                        No pending tasks 🎉
+                    </div>
+                {% endfor %}
+
+            </div>
+        </div>
+
+        <!-- Team -->
+        <div class="bg-white border border-gray-200 rounded-lg p-4">
+
+            <h3 class="font-semibold text-gray-800 mb-3">Team</h3>
+
+            {% for member in project.members.all %}
+                <div class="flex items-center gap-3 mb-3">
+
+                    <div class="w-8 h-8 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center text-sm font-semibold">
+                        {{ member.username|first|upper }}
+                    </div>
+
+                    <div>
+                        <p class="text-sm text-gray-800">
+                            {{ member.get_full_name|default:member.username }}
+                        </p>
+
+                        {% if member == project.owner %}
+                            <span class="text-xs text-indigo-600">Owner</span>
+                        {% endif %}
+                    </div>
+
+                </div>
+            {% endfor %}
+
+        </div>
+    </div>
+
+    <!-- Completed Tasks -->
+    <div class="mt-6 bg-white border border-gray-200 rounded-lg">
+
+        <div class="p-4 border-b border-gray-100">
+            <h3 class="text-gray-500 font-semibold">Completed Tasks</h3>
+        </div>
+
+        <div>
+
+            {% for task in completed_tasks %}
+                <div class="p-4 text-sm text-gray-400 line-through border-b border-gray-100">
+                    {{ task.title }}
+                    <span class="ml-2 text-xs">
+                        • {{ task.updated_at|timesince }} ago
+                    </span>
+                </div>
+            {% empty %}
+                <div class="p-6 text-center text-gray-400 text-sm">
+                    No completed tasks yet
+                </div>
+            {% endfor %}
+
+        </div>
+    </div>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function copyInvite() {
+    const input = document.getElementById("inviteLink");
+    navigator.clipboard.writeText(input.value);
+    alert("Invite link copied!");
+}
+</script>
+{% endblock %}

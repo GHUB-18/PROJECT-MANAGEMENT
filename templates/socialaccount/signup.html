@@ -1,0 +1,79 @@
+<!-- templates/socialaccount/signup.html -->
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finish Setup | ProjectHub</title>
+
+    <link rel="stylesheet" href="{% static 'core/css/auth.css' %}">
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="auth-box">
+
+        <h2>One Last Thing...</h2>
+        <p class="subtitle">
+            Complete your profile details to finish joining ProjectHub.
+        </p>
+
+        <form method="post">
+            {% csrf_token %}
+
+            {% for hidden in form.hidden_fields %}
+                {{ hidden }}
+            {% endfor %}
+
+            {% if form.errors %}
+            <div style="color:red; margin-bottom:20px;">
+                {{ form.errors }}
+            </div>
+            {% endif %}
+
+            <div class="form-row">
+                <!-- EMAIL -->
+                <div class="form-group">
+                    <label>Email</label>
+                    {{ form.email }}
+                </div>
+
+                <!-- USERNAME -->
+                <div class="form-group">
+                    <label>Username</label>
+                    {{ form.username }}
+                </div>
+                
+                <div class="form-group">
+                    <label>First Name</label>
+                    {{ form.first_name }}
+                </div>
+
+                <div class="form-group">
+                    <label>Last Name</label>
+                    {{ form.last_name }}
+                </div>
+
+            </div>
+
+            <div class="form-group">
+                <label>Job Title</label>
+                {{ form.job_title }}
+            </div>
+
+            <button type="submit" class="btn">
+                Finish & Enter Dashboard
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+</body>
+</html>

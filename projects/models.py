@@ -1,33 +1,66 @@
+import uuid
 from django.db import models
-from django.contrib.auth.models import User
+from django.conf import settings
+from django.urls import reverse
 
-# Create your models here.
 class Project(models.Model):
-    name = models.CharField(max_length=200)
-    description = models.TextField()
-    invite_code = models.CharField(max_length=100, unique=True)
-    leader = models.ForeignKey(User, on_delete=models.CASCADE, related_name='led_projects')
-    members = models.ManyToManyField(User, related_name='joined_projects')
 
-    def __str__(self):
-        return self.name
-class Task(models.Model):
-    project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name='tasks')
+    COLOR_CHOICES = [
+        ('purple', 'Purple'),
+        ('blue', 'Blue'),
+        ('green', 'Green'),
+        ('orange', 'Orange'),
+    ]
+
+    STATUS_CHOICES = [
+        ('active', 'Active'),
+        ('done', 'Done'),
+    ]
+
     title = models.CharField(max_length=200)
     description = models.TextField()
-    assigned_to = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, related_name='assigned_tasks')
-    deadline = models.DateTimeField()
-    is_completed = models.BooleanField(default=False)
-    completed_at = models.DateTimeField(null=True, blank=True)
+
+    color_theme = models.CharField(
+        max_length=20,
+        choices=COLOR_CHOICES,
+        default='purple'
+    )
+
+    members = models.ManyToManyField(
+        settings.AUTH_USER_MODEL,
+        related_name='projects'
+    )
+
+    owner = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='owned_projects'
+    )
+
+    invite_token = models.UUIDField(
+        default=uuid.uuid4,
+        unique=True,
+        editable=False
+    )
+
+    status = models.CharField(
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default='active'
+    )
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def get_invite_link(self):
+        return reverse('join_project', args=[self.invite_token])
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        if self.owner and self.owner not in self.members.all():
+            self.members.add(self.owner)
 
     def __str__(self):
         return self.title
-
-class ProjectFile(models.Model):
-    project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name='files')
-    uploaded_by = models.ForeignKey(User, on_delete=models.CASCADE)
-    file = models.FileField(upload_to='project_files/')
-    uploaded_at = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return f"{self.file.name} in {self.project.name}"

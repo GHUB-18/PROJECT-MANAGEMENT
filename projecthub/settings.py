@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/6.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
 """
-
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -37,9 +37,55 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
+    'django.contrib.humanize', # For human-friendly date formatting
 
+    #Your apps
+    'core',
     'projects',
+    'tasks',
+    'accounts',
+    'notifications',
+    
+    #Allauth 
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.github',
 ]
+
+# GitHub Specific Settings
+SOCIALACCOUNT_PROVIDERS = {
+    'github': {
+        'SCOPE': [
+            'user',
+            'repo',
+            'read:org',
+        ],
+        'VERIFIED_EMAIL': True,
+    }
+}
+
+
+
+SOCIALACCOUNT_FORMS = {
+    'signup': 'accounts.forms.CustomSocialSignupForm',
+}
+
+SITE_ID = 1
+
+#Authentication settings
+ACCOUNT_LOGIN_METHODS = {"username", "email"}
+ACCOUNT_SIGNUP_FIELDS = ["email*", "username*"]
+ACCOUNT_UNIQUE_EMAIL = True
+ACCOUNT_EMAIL_VERIFICATION = 'none'  # Change to 'mandatory' in production
+ACCOUNT_LOGOUT_ON_GET = True
+
+
+
+# Tell Django to use your Custom User Model
+AUTH_USER_MODEL = 'accounts.User'
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -49,26 +95,36 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'allauth.account.middleware.AccountMiddleware',
+    # "accounts.middleware.OnboardingMiddleware",
 ]
 
-ROOT_URLCONF = 'core.urls'
+ROOT_URLCONF = 'projecthub.urls'
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],  # Global templates directory
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.debug',  # Add this line to include request in templates
+                'notifications.context_processors.notifications_context',  # Custom context processor for notifications
+                'core.context_processors.assigned_tasks_processor',
             ],
         },
     },
 ]
 
-WSGI_APPLICATION = 'core.wsgi.application'
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
+
+WSGI_APPLICATION = 'projecthub.wsgi.application'
 
 
 # Database
@@ -76,11 +132,11 @@ WSGI_APPLICATION = 'core.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'project_management.db',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'project_management_db',
         'USER': 'postgres',
-        'PASSWORD': 'jainaba',
-        'HOST': 'localhost',
+        'PASSWORD': 'passkey',
+        'HOST': '127.0.0.1',
         'PORT': '5433',
     }
 }
@@ -120,4 +176,27 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
+# Use the names defined by the URL patterns
+LOGIN_URL = 'index'
+LOGIN_REDIRECT_URL = '/auth-redirect/'  
+LOGOUT_REDIRECT_URL = 'index'
+AUTH_USER_MODEL = 'accounts.User'
 STATIC_URL = 'static/'
+STATICFILES_DIRS = [
+    BASE_DIR / 'static'
+    ]   # Redirect to login after logout
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+SOCIALACCOUNT_LOGIN_ON_GET = True
+SOCIALACCOUNT_AUTO_SIGNUP = True
+SOCIALACCOUNT_QUERY_EMAIL = True
+SOCIALACCOUNT_EMAIL_VERIFICATION = "none"
+ACCOUNT_EMAIL_REQUIRED = True
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False
+SESSION_COOKIE_SECURE = False  # Set to True in production with HTTPS
+
+
+CSRF_TRUSTED_ORIGINS = [
+    "http://127.0.0.1:8000",
+    "http://localhost:8000",
+]
