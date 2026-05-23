@@ -1,219 +1,141 @@
+{% load static %}
 <!DOCTYPE html>
-<html lang="en" class="h-full">
-
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <title>{% block title %}ProjectHub{% endblock %}</title>
-
-  {% load static %}
-
-  <!-- Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-
-  <!-- Tailwind -->
-  <script src="https://cdn.tailwindcss.com"></script>
-
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: {
-            sans: ['Inter', 'sans-serif'],
-          },
-
-          colors: {
-            primary: {
-              50: '#eef2ff',
-              100: '#e0e7ff',
-              200: '#c7d2fe',
-              300: '#a5b4fc',
-              400: '#818cf8',
-              500: '#6366f1',
-              600: '#4f46e5',
-              700: '#4338ca',
-              800: '#3730a3',
-              900: '#312e81',
-            }
-          },
-
-          boxShadow: {
-            soft: '0 4px 20px rgba(0,0,0,0.05)',
-          },
-
-          animation: {
-            fadeIn: 'fadeIn 0.4s ease-out',
-          },
-
-          keyframes: {
-            fadeIn: {
-              '0%': {
-                opacity: '0',
-                transform: 'translateY(6px)'
-              },
-              '100%': {
-                opacity: '1',
-                transform: 'translateY(0)'
-              }
-            }
-          }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Project Management System{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'core/css/style.css' %}">
+    
+    <style>
+        .dropdown-menu {
+            display: none;
+            list-style: none;
+            padding-left: 1.5rem;
+            margin-top: 0.25rem;
         }
-      }
-    }
-  </script>
-
-  <link rel="stylesheet" href="{% static 'css/style.css' %}">
-
-  {% block extra_css %}{% endblock %}
+        .dropdown-menu.show {
+            display: block;
+        }
+        .sidebar-link.dropdown-toggle::after {
+            content: ' ▾';
+            float: right;
+            transition: transform 0.2s;
+        }
+        .sidebar-link.dropdown-toggle.open::after {
+            transform: rotate(180deg);
+        }
+        .sidebar-sub-link {
+            display: block;
+            padding: 0.5rem 1rem;
+            color: #64748B;
+            text-decoration: none;
+            font-size: 0.9rem;
+            border-radius: 0.375rem;
+            transition: all 0.2s;
+        }
+        .sidebar-sub-link:hover {
+            background-color: var(--color-bg-clean);
+            color: var(--color-blue-accent);
+        }
+    </style>
+    {% block extra_css %}{% endblock %}
 </head>
+<body>
 
-<body class="bg-[#f4f7fb] text-gray-800 h-full font-sans antialiased flex flex-col">
-
-  <!-- Topbar -->
-  {% if user.is_authenticated %}
-    {% include 'components/topbar.html' %}
-  {% endif %}
-
-  <!-- Mobile Overlay -->
-  <div id="sidebarMobileOverlay"
-       class="fixed inset-0 bg-black/40 backdrop-blur-sm z-30 hidden md:hidden transition-opacity duration-300">
-  </div>
-
-  <!-- Layout -->
-  <div class="flex flex-1 {% if user.is_authenticated %}pt-16{% endif %} relative overflow-hidden min-h-screen">
-
-    <!-- Sidebar -->
-    {% if user.is_authenticated %}
-      {% include 'components/sidebar.html' %}
-    {% endif %}
-
-    <!-- Main Content -->
-    <main class="main-content flex-1 overflow-y-auto px-4 py-6 md:p-8 {% if user.is_authenticated %}md:pl-72{% endif %} transition-all duration-300 bg-[#f4f7fb]">
-
-      <div class="max-w-6xl mx-auto w-full space-y-6">
-
-        <!-- Messages -->
-        {% if messages %}
-          <div class="space-y-3">
-
-            {% for message in messages %}
-
-              <div class="flex items-center gap-3 px-5 py-4 rounded-2xl border text-sm font-medium shadow-sm
-
-                {% if message.tags == 'success' %}
-                  bg-emerald-50 border-emerald-200 text-emerald-700
-
-                {% elif message.tags == 'error' %}
-                  bg-rose-50 border-rose-200 text-rose-700
-
-                {% elif message.tags == 'warning' %}
-                  bg-amber-50 border-amber-200 text-amber-700
-
-                {% else %}
-                  bg-blue-50 border-blue-200 text-blue-700
-
-                {% endif %}"
-
-                role="alert">
-
-                <span class="text-base shrink-0">
-
-                  {% if message.tags == 'success' %}
-                    ✓
-
-                  {% elif message.tags == 'error' %}
-                    ✕
-
-                  {% elif message.tags == 'warning' %}
-                    ⚠
-
-                  {% else %}
-                    ℹ
-
-                  {% endif %}
-
-                </span>
-
-                <p class="flex-1 leading-relaxed">
-                  {{ message }}
-                </p>
-
-              </div>
-
-            {% endfor %}
-
-          </div>
-        {% endif %}
-
-        <!-- Page Title -->
-        {% if block.super or block.page_title %}
-
-          <div class="border-b border-gray-200 pb-4">
-
-            <h1 class="text-3xl font-bold tracking-tight text-gray-900">
-              {% block page_title %}{% endblock %}
-            </h1>
-
-          </div>
-
-        {% endif %}
-
-        <!-- Main Page Content -->
-        <div class="animate-fadeIn">
-
-          {% block content %}
-          {% endblock %}
-
+    <aside class="sidebar">
+        <div class="sidebar-brand">
+            <!-- <img src="{% static 'images/logo.png' %}"  class="logo"> -->
+            <span class="brand-name">ProjectHub</span>
         </div>
+        
+        <ul class="sidebar-menu">
+            <li>
+                <a href="{% url 'dashboard' %}" class="sidebar-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">🏠 Home</a>
+            </li>
 
-      </div>
+            <li class="sidebar-item-dropdown">
+                <a href="#" class="sidebar-link dropdown-toggle" id="projectsDropdownToggle">📁 Projects</a>
+                <ul class="dropdown-menu" id="projectsDropdownMenu">
+                    {% if user_projects %}
+                        {% for project in user_projects %}
+                            <li>
+                                <a href="{% url 'project_detail' project.id %}" class="sidebar-sub-link">
+                                    • {{ project.name }}
+                                </a>
+                            </li>
+                        {% endfor %}
+                    {% else %}
+                        <li><span class="sidebar-sub-link" style="font-style: italic;">No active projects</span></li>
+                    {% endif %}
+                </ul>
+            </li>
 
-    </main>
+            <li>
+              {% if request.resolver_match.kwargs.project_id %}
+                  <a href="{% url 'tasks:task_list' project_id=request.resolver_match.kwargs.project_id %}" 
+                    class="sidebar-link {% if request.resolver_match.url_name == 'task_list' %}active{% endif %}">
+                    📋 To do
+                  </a>
+              {% elif projects.exists %}
+                  <a href="{% url 'tasks:task_list' project_id=projects.first.id %}" 
+                    class="sidebar-link">
+                    📋 To do
+                  </a>
+              {% else %}
+                  <a href="#" onclick="alert('Please create or join a project first to view tasks!'); return false;" 
+                    class="sidebar-link" style="opacity: 0.6; cursor: not-allowed;">
+                    📋 To do
+                  </a>
+              {% endif %}
+            </li>
 
-  </div>
+            {% if is_project_admin or user.role == 'Admin' %}
+                <li style="margin-top: 2rem; border-top: 1px solid var(--color-border); padding-top: 1rem;">
+                    <span style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: #94A3B8; padding-left: 1rem;">Management</span>
+                </li>
+                <li>
+                    <a href="{% url 'administration' %}" class="sidebar-link {% if request.resolver_match.url_name == 'administration' %}active{% endif %}" style="color: var(--color-primary-purple);">
+                        ⚙️ Administration
+                    </a>
+                </li>
+            {% endif %}
+        </ul>
+    </aside>
 
-  {% block extra_js %}{% endblock %}
+    <div class="main-wrapper">
+        
+        <header class="navbar">
+            <div class="navbar-title">
+                <h2>{% block page_title %}Dashboard{% endblock %}</h2>
+            </div>
+            <div class="navbar-user">
+                <span>Welcome, {% if user.is_authenticated %}{{ user.username }}{% else %}Team Member{% endif %}</span>
+            </div>
+        </header>
 
-  <!-- Sidebar Toggle -->
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
+        <main class="content-container">
+            {% block content %}
+            {% endblock %}
+        </main>
 
-      const toggleBtn = document.getElementById('sidebarToggle');
-      const sidebarElement = document.getElementById('sidebar');
-      const mobileOverlay = document.getElementById('sidebarMobileOverlay');
+    </div>
 
-      function toggleSidebarState() {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const toggleBtn = document.getElementById('projectsDropdownToggle');
+            const menu = document.getElementById('projectsDropdownMenu');
 
-        if (!sidebarElement) return;
-
-        if (window.innerWidth < 768) {
-
-          sidebarElement.classList.toggle('-translate-x-full');
-          mobileOverlay.classList.toggle('hidden');
-
-        } else {
-
-          sidebarElement.classList.toggle('md:translate-x-0');
-          document.querySelector('main').classList.toggle('md:pl-72');
-
-        }
-      }
-
-      if (toggleBtn) {
-        toggleBtn.addEventListener('click', toggleSidebarState);
-      }
-
-      if (mobileOverlay) {
-        mobileOverlay.addEventListener('click', toggleSidebarState);
-      }
-
-    });
-  </script>
-
+            if (toggleBtn && menu) {
+                toggleBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    menu.classList.toggle('show');
+                    toggleBtn.classList.toggle('open');
+                });
+            }
+        });
+    </script>
+    <script src="{% static 'js/main.js' %}"></script>
+    {% block extra_js %}{% endblock %}
 </body>
-
 </html>
