@@ -2,185 +2,330 @@
 
 {% block page_title %}{{ project.name }}{% endblock %}
 
+{% block extra_head %}
+<style>
+    /* View Core Layout wrapper */
+    .project-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem 1.5rem;
+        background-color: #fbfbfe;
+        min-height: 100vh;
+        box-sizing: border-box;
+    }
+
+    /* Core Hero Header Layout */
+    .project-header-deck {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 2rem;
+        padding-bottom: 1.5rem;
+        border-bottom: 1px solid #f3e8ff;
+    }
+
+    .project-meta-info p.owner-tag {
+        font-size: 0.875rem;
+        color: #4b5563;
+        margin: 0 0 0.5rem 0;
+    }
+
+    .project-meta-info h1 {
+        font-size: 2rem;
+        font-weight: 800;
+        color: #000000;
+        margin: 0 0 0.75rem 0;
+        letter-spacing: -0.025em;
+    }
+
+    .badge-row {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .badge-member-count {
+        background-color: #f5f3ff;
+        color: #7c3aed;
+        font-size: 0.75rem;
+        font-weight: 700;
+        padding: 0.25rem 0.65rem;
+        border-radius: 9999px;
+    }
+
+    .timestamp-label {
+        font-size: 0.75rem;
+        color: #94a3b8;
+        font-weight: 500;
+    }
+
+    /* Button Action Elements */
+    .btn-leave-project {
+        background-color: transparent;
+        color: #dc2626;
+        border: 1px solid #fee2e2;
+        padding: 0.5rem 1rem;
+        font-size: 0.875rem;
+        font-weight: 600;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.15s ease;
+    }
+
+    .btn-leave-project:hover {
+        background-color: #fef2f2;
+    }
+
+    /* 📊 Main Content Responsive Layout Split Matrix */
+    .project-grid-layout {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 1.5rem;
+    }
+
+    @media (max-width: 992px) {
+        .project-grid-layout {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    /* White Panel Presentation Containers */
+    .content-panel-card {
+        background-color: #ffffff;
+        border: 1px solid #f3e8ff;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px rgba(124, 58, 237, 0.01);
+        overflow: hidden;
+    }
+
+    .panel-header-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 1.25rem;
+        border-bottom: 1px solid #f3e8ff;
+    }
+
+    .panel-header-row h3 {
+        margin: 0;
+        font-size: 1rem;
+        font-weight: 700;
+        color: #000000;
+    }
+
+    .panel-header-row .action-trigger {
+        font-size: 0.875rem;
+        color: #7c3aed;
+        text-decoration: none;
+        font-weight: 600;
+    }
+
+    .panel-header-row .action-trigger:hover {
+        color: #6d28d9;
+    }
+
+    /* Task Rows View Configurations */
+    .task-stack-list {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .task-row-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 1.25rem;
+        border-bottom: 1px solid #fafafa;
+    }
+
+    .task-row-item:last-child {
+        border-bottom: none;
+    }
+
+    .task-title {
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: #000000;
+        margin: 0 0 0.25rem 0;
+    }
+
+    .task-due-date {
+        font-size: 0.75rem;
+        color: #94a3b8;
+        margin: 0;
+    }
+
+    .priority-badge {
+        font-size: 0.75rem;
+        font-weight: 600;
+        padding: 0.25rem 0.5rem;
+        background-color: #f3f4f6;
+        color: #4b5563;
+        border-radius: 6px;
+        text-transform: capitalize;
+    }
+
+    /* Team Member Meta Profiles Rows */
+    .team-scroll-panel {
+        padding: 1.25rem;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .team-member-row {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .avatar-initial-circle {
+        width: 36px;
+        height: 36px;
+        background-color: #f5f3ff;
+        color: #7c3aed;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.875rem;
+        font-weight: 700;
+    }
+
+    .member-name {
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: #000000;
+        margin: 0;
+    }
+
+    .member-role-label {
+        font-size: 11px;
+        color: #94a3b8;
+        font-weight: 500;
+    }
+
+    /* Completed Task Log Stacks */
+    .completed-log-row {
+        padding: 1rem 1.25rem;
+        font-size: 0.875rem;
+        color: #94a3b8;
+        text-decoration: line-through;
+        border-bottom: 1px solid #fbfbfe;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .completed-log-row span.meta-ago {
+        text-decoration: none;
+        display: inline-block;
+        font-size: 0.75rem;
+        color: #cbd5e1;
+    }
+
+    /* Standardized Empty Notification Windows */
+    .empty-state-notice {
+        padding: 2.5rem 1.5rem;
+        text-align: center;
+        color: #94a3b8;
+        font-size: 0.875rem;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="container mx-auto px-4 py-8 bg-gray-50 min-h-screen">
+<div class="project-container">
 
-    <!-- Header -->
-    <div class="flex justify-between items-start mb-6">
-
-        <div>
-            <p class="text-sm text-gray-500 mb-1">
-                Created by {{ project.owner.get_full_name|default:project.owner.username }}
+    <div class="project-header-deck">
+        <div class="project-meta-info">
+            <p class="owner-tag">
+                Managed by <strong>{{ project.owner.get_full_name|default:project.owner.username }}</strong>
             </p>
+            <h1>{{ project.name }}</h1>
 
-            <div class="flex items-center gap-3">
-                <span class="px-2 py-1 text-xs rounded-full bg-indigo-100 text-indigo-700">
-                    {{ project.members.count }} Members
-                </span>
-
-                <span class="text-xs text-gray-400">
-                    Created {{ project.created_at|date:"M d, Y" }}
-                </span>
+            <div class="badge-row">
+                <span class="badge-member-count">{{ project.members.count }} Active Members</span>
+                <span class="timestamp-label">Created {{ project.created_at|date:"M d, Y" }}</span>
             </div>
         </div>
 
-        <!-- Actions -->
-        <div class="flex gap-2">
-
-            {% if is_owner %}
-                <a href="{% url 'projects:edit_project' project.id %}"
-                   class="px-3 py-1.5 text-sm border border-gray-300 rounded-md hover:bg-gray-100">
-                    Edit
-                </a>
-
-                <button onclick="confirmDelete()"
-                        class="px-3 py-1.5 text-sm text-red-500 hover:bg-red-50 rounded-md">
-                    Delete
+        <div>
+            <form action="{% url 'projects:leave_project' project.id %}" method="POST" onsubmit="return confirm('Are you sure you want to leave this project workspace?');">
+                {% csrf_token %}
+                <button type="submit" class="btn-leave-project">
+                    Leave Project
                 </button>
-
-            {% else %}
-
-                <form action="{% url 'projects:leave_project' project.id %}"
-                      method="POST"
-                      onsubmit="return confirm('Are you sure?');">
-                    {% csrf_token %}
-                    <button type="submit"
-                            class="px-3 py-1.5 text-sm text-red-500 border border-red-200 rounded-md hover:bg-red-50">
-                        Leave
-                    </button>
-                </form>
-
-            {% endif %}
-
+            </form>
         </div>
     </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
-
-        <!-- Invite -->
-        {% if is_owner %}
-        <div class="lg:col-span-3 bg-white border border-gray-200 rounded-lg p-4">
-
-            <label class="block text-sm font-semibold text-gray-700 mb-2">
-                Invite Team Members
-            </label>
-
-            <div class="flex gap-2">
-
-                <input type="text"
-                       readonly
-                       id="inviteLink"
-                       value="{{ request.get_host }}{% url 'projects:join_project' project.invite_token %}"
-                       class="flex-1 px-3 py-2 border border-gray-300 rounded-md text-sm bg-gray-50">
-
-                <button onclick="copyInvite()"
-                        class="px-3 py-2 bg-indigo-600 text-white rounded-md text-sm hover:bg-indigo-500">
-                    Copy
-                </button>
-
-            </div>
-        </div>
-        {% endif %}
-
-        <!-- Pending Tasks -->
-        <div class="lg:col-span-2 bg-white border border-gray-200 rounded-lg">
-
-            <div class="flex justify-between items-center p-4 border-b border-gray-100">
-                <h3 class="font-semibold text-gray-800">Pending Tasks</h3>
-                <a href="#" class="text-sm text-indigo-600 hover:text-indigo-500">+ New Task</a>
+    <div class="project-grid-layout">
+        
+        <div class="content-panel-card">
+            <div class="panel-header-row">
+                <h3>Pending Tasks</h3>
+                <a href="#" class="action-trigger">+ New Task</a>
             </div>
 
-            <div class="divide-y divide-gray-100">
-
+            <div class="task-stack-list">
                 {% for task in pending_tasks %}
-                    <div class="p-4 flex justify-between items-center">
-
+                    <div class="task-row-item">
                         <div>
-                            <p class="font-medium text-gray-800">
-                                {{ task.title }}
-                            </p>
-
-                            <p class="text-xs text-gray-400">
-                                Due {{ task.due_date|date:"M d" }}
-                            </p>
+                            <p class="task-title">{{ task.title }}</p>
+                            <p class="task-due-date">📅 Due {{ task.due_date|date:"M d" }}</p>
                         </div>
-
-                        <span class="text-xs px-2 py-1 rounded-full bg-gray-100 text-gray-600">
-                            {{ task.priority }}
-                        </span>
-
+                        <span class="priority-badge">{{ task.priority }}</span>
                     </div>
                 {% empty %}
-                    <div class="p-6 text-center text-gray-400 text-sm">
-                        No pending tasks 🎉
+                    <div class="empty-state-notice">
+                        No pending structural tasks registered. Clean plate! 🎉
                     </div>
                 {% endfor %}
-
             </div>
         </div>
 
-        <!-- Team -->
-        <div class="bg-white border border-gray-200 rounded-lg p-4">
-
-            <h3 class="font-semibold text-gray-800 mb-3">Team</h3>
-
-            {% for member in project.members.all %}
-                <div class="flex items-center gap-3 mb-3">
-
-                    <div class="w-8 h-8 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center text-sm font-semibold">
-                        {{ member.username|first|upper }}
+        <div class="content-panel-card">
+            <div class="panel-header-row">
+                <h3>Team Roster</h3>
+            </div>
+            <div class="team-scroll-panel">
+                {% for member in project.members.all %}
+                    <div class="team-member-row">
+                        <div class="avatar-initial-circle">
+                            {{ member.username|first|upper }}
+                        </div>
+                        <div>
+                            <p class="member-name">{{ member.get_full_name|default:member.username }}</p>
+                            {% if member == project.owner %}
+                                <span class="member-role-label" style="color: #7c3aed; font-weight: 700;">Owner</span>
+                            {% else %}
+                                <span class="member-role-label">Collaborator</span>
+                            {% endif %}
+                        </div>
                     </div>
-
-                    <div>
-                        <p class="text-sm text-gray-800">
-                            {{ member.get_full_name|default:member.username }}
-                        </p>
-
-                        {% if member == project.owner %}
-                            <span class="text-xs text-indigo-600">Owner</span>
-                        {% endif %}
-                    </div>
-
-                </div>
-            {% endfor %}
-
+                {% endfor %}
+            </div>
         </div>
     </div>
 
-    <!-- Completed Tasks -->
-    <div class="mt-6 bg-white border border-gray-200 rounded-lg">
-
-        <div class="p-4 border-b border-gray-100">
-            <h3 class="text-gray-500 font-semibold">Completed Tasks</h3>
+    <div class="content-panel-card" style="margin-top: 1.5rem;">
+        <div class="panel-header-row">
+            <h3 style="color: #94a3b8;">Completed Archive</h3>
         </div>
-
-        <div>
-
+        <div class="task-stack-list">
             {% for task in completed_tasks %}
-                <div class="p-4 text-sm text-gray-400 line-through border-b border-gray-100">
-                    {{ task.title }}
-                    <span class="ml-2 text-xs">
-                        • {{ task.updated_at|timesince }} ago
-                    </span>
+                <div class="completed-log-row">
+                    <span>✓ {{ task.title }}</span>
+                    <span class="meta-ago">• Completed {{ task.updated_at|timesince }} ago</span>
                 </div>
             {% empty %}
-                <div class="p-6 text-center text-gray-400 text-sm">
-                    No completed tasks yet
+                <div class="empty-state-notice" style="padding: 1.5rem;">
+                    No archived task logs completed yet.
                 </div>
             {% endfor %}
-
         </div>
     </div>
 
 </div>
-{% endblock %}
-
-{% block extra_js %}
-<script>
-function copyInvite() {
-    const input = document.getElementById("inviteLink");
-    navigator.clipboard.writeText(input.value);
-    alert("Invite link copied!");
-}
-</script>
 {% endblock %}

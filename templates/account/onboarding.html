@@ -1,54 +1,247 @@
 {% extends 'base.html' %}
 
+{% block extra_head %}
+<style>
+    .onboard-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 75vh;
+        padding: 2rem;
+        box-sizing: border-box;
+    }
+
+    /* Main onboarding presentation card */
+    .onboard-card {
+        background: #ffffff;
+        padding: 2.5rem 2.25rem;
+        border-radius: 16px;
+        box-shadow: 0 10px 25px rgba(124, 58, 237, 0.05), 0 4px 12px rgba(0, 0, 0, 0.03);
+        border: 1px solid #f3e8ff;
+        max-width: 440px;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    /* Horizontal multi-step progress indicator badges */
+    .step-indicator-bar {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 2rem;
+        position: relative;
+    }
+
+    .step-indicator-bar::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background-color: #f3e8ff;
+        z-index: 1;
+        transform: translateY(-50%);
+    }
+
+    .step-dot {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background-color: #ffffff;
+        border: 2px solid #e5e7eb;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.85rem;
+        font-weight: 700;
+        color: #9ca3af;
+        position: relative;
+        z-index: 2;
+        transition: all 0.3s ease;
+    }
+
+    .step-dot.active {
+        border-color: #7c3aed;
+        background-color: #7c3aed;
+        color: #ffffff;
+        box-shadow: 0 0 0 4px #f5f3ff;
+    }
+
+    .step-dot.completed {
+        border-color: #000000;
+        background-color: #000000;
+        color: #ffffff;
+    }
+
+    /* Card Context Titles & Subtext */
+    .onboard-card h2 {
+        font-size: 1.65rem;
+        font-weight: 800;
+        color: #000000;
+        margin: 0 0 0.5rem 0;
+        letter-spacing: -0.02em;
+    }
+
+    .onboard-card p.step-desc {
+        font-size: 0.925rem;
+        color: #4b5563;
+        margin: 0 0 2rem 0;
+        line-height: 1.5;
+    }
+
+    /* Semantic input groupings styling */
+    .form-group {
+        margin-bottom: 1.25rem;
+    }
+
+    .form-group label {
+        display: block;
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: #000000;
+        margin-bottom: 0.4rem;
+    }
+
+    .onboard-card input[type="text"],
+    .onboard-card input[type="url"] {
+        width: 100%;
+        padding: 0.8rem 1rem;
+        border: 1px solid #d1d5db;
+        border-radius: 8px;
+        font-size: 0.95rem;
+        color: #000000;
+        background-color: #ffffff;
+        box-sizing: border-box;
+        transition: all 0.15s ease;
+    }
+
+    .onboard-card input:focus {
+        outline: none;
+        border-color: #7c3aed;
+        box-shadow: 0 0 0 4px #f5f3ff;
+    }
+
+    /* Action Buttons (Purple Primary vs Black Finalizer) */
+    .onboard-btn-next {
+        width: 100%;
+        background-color: #7c3aed;
+        color: #ffffff;
+        padding: 0.85rem;
+        border-radius: 10px;
+        border: none;
+        font-size: 0.95rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background-color 0.15s ease;
+        margin-top: 0.5rem;
+    }
+
+    .onboard-btn-next:hover {
+        background-color: #6d28d9;
+    }
+
+    .onboard-btn-final {
+        width: 100%;
+        background-color: #000000;
+        color: #ffffff;
+        padding: 0.85rem;
+        border-radius: 10px;
+        border: 1px solid #000000;
+        font-size: 0.95rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background-color 0.15s ease;
+        margin-top: 0.5rem;
+    }
+
+    .onboard-btn-final:hover {
+        background-color: #1f2937;
+    }
+
+    /* Complete State Checkmark Animation Hero Graphic */
+    .success-badge {
+        width: 64px;
+        height: 64px;
+        background-color: #f5f3ff;
+        color: #7c3aed;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.75rem;
+        margin: 0 auto 1.5rem auto;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="container mx-auto px-6 py-12">
-    <div class="max-w-md mx-auto bg-white p-8 rounded-xl shadow-md border border-gray-100">
+<div class="onboard-container">
+    <div class="onboard-card">
         
+        <div class="step-indicator-bar">
+            <div class="step-dot {% if step == 1 %}active{% elif step > 1 %}completed{% endif %}">1</div>
+            <div class="step-dot {% if step == 2 %}active{% elif step > 2 %}completed{% endif %}">2</div>
+            <div class="step-dot {% if step == 3 %}active{% endif %}">3</div>
+        </div>
+
         <form method="POST">
             {% csrf_token %}
             
             {% if step == 1 %}
-                <h2 class="text-2xl font-bold text-gray-800 mb-4">Complete your profile</h2>
-                <p class="text-gray-600 mb-6">Step 1: Let's get your basic information.</p>
+                <h2>Complete your profile</h2>
+                <p class="step-desc">Step 1: Let's get your basic details configured.</p>
                 
                 <input type="hidden" name="step" value="1">
                 
-                <input type="text" name="first_name" placeholder="First Name" required
-                       class="w-full border border-gray-300 rounded-lg px-4 py-2 mb-4 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500">
+                <div class="form-group">
+                    <label>First Name</label>
+                    <input type="text" name="first_name" placeholder="e.g., Jane" required>
+                </div>
                        
-                <input type="text" name="last_name" placeholder="Last Name" required
-                       class="w-full border border-gray-300 rounded-lg px-4 py-2 mb-4 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500">
+                <div class="form-group">
+                    <label>Last Name</label>
+                    <input type="text" name="last_name" placeholder="e.g., Doe" required>
+                </div>
                        
-                <input type="text" name="job_title" placeholder="Job Title" required
-                       class="w-full border border-gray-300 rounded-lg px-4 py-2 mb-6 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500">
+                <div class="form-group" style="margin-bottom: 1.75rem;">
+                    <label>Job Title</label>
+                    <input type="text" name="job_title" placeholder="e.g., Lead Developer" required>
+                </div>
                 
-                <button type="submit" class="w-full bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-500 transition">
-                    Next Step
+                <button type="submit" class="onboard-btn-next">
+                    Next Step →
                 </button>
 
             {% elif step == 2 %}
-                <h2 class="text-2xl font-bold text-gray-800 mb-4">Connect your work</h2>
-                <p class="text-gray-600 mb-6">Step 2: Add your GitHub information for project tracking.</p>
+                <h2>Connect your work</h2>
+                <p class="step-desc">Step 2: Sync your external GitHub handler for tracking repository issues.</p>
                 
                 <input type="hidden" name="step" value="2">
                 
-                <input type="text" name="github_username" placeholder="GitHub Username" required
-                       class="w-full border border-gray-300 rounded-lg px-4 py-2 mb-4 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500">
+                <div class="form-group">
+                    <label>GitHub Username</label>
+                    <input type="text" name="github_username" placeholder="octocat" required>
+                </div>
                        
-                <input type="url" name="github_url" placeholder="https://github.com/username" required
-                       class="w-full border border-gray-300 rounded-lg px-4 py-2 mb-6 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500">
+                <div class="form-group" style="margin-bottom: 1.75rem;">
+                    <label>GitHub Profile Link</label>
+                    <input type="url" name="github_url" placeholder="https://github.com/octocat" required>
+                </div>
                 
-                <button type="submit" class="w-full bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-500 transition">
-                    Next Step
+                <button type="submit" class="onboard-btn-next">
+                    Next Step →
                 </button>
 
             {% elif step == 3 %}
-                <h2 class="text-2xl font-bold text-gray-800 mb-4">You're all set!</h2>
-                <p class="text-gray-600 mb-6">Your profile is complete. Click below to head to your dashboard.</p>
+                <div class="success-badge">✨</div>
+                <h2 style="text-align: center;">You're all set!</h2>
+                <p class="step-desc" style="text-align: center; margin-bottom: 1.75rem;">
+                    Your profile initialization parameters have successfully synchronized. Click below to launch your management center.
+                </p>
                 
                 <input type="hidden" name="step" value="3">
                 
-                <button type="submit" class="w-full bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-500 transition">
+                <button type="submit" class="onboard-btn-final">
                     Start Managing Projects
                 </button>
             {% endif %}

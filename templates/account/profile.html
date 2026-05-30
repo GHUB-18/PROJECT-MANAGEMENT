@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+
+{% block title %}My Profile{% endblock %}
+{% block page_title %}Profile{% endblock %}
+
+{% block extra_css %}
+<style>
+.profile-container{
+    max-width:900px;
+    margin:auto;
+}
+
+.profile-card{
+    background:white;
+    border-radius:16px;
+    padding:32px;
+    box-shadow:0 4px 20px rgba(0,0,0,.05);
+}
+
+.profile-header{
+    display:flex;
+    align-items:center;
+    gap:24px;
+    margin-bottom:32px;
+}
+
+.profile-avatar{
+    width:100px;
+    height:100px;
+    border-radius:50%;
+    background:#7c3aed;
+    color:white;
+    font-size:2.5rem;
+    font-weight:700;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.profile-name{
+    font-size:1.8rem;
+    font-weight:700;
+    margin:0;
+}
+
+.profile-role{
+    color:#6b7280;
+    margin-top:5px;
+}
+
+.profile-grid{
+    display:grid;
+    grid-template-columns:200px 1fr;
+    row-gap:16px;
+}
+
+.profile-label{
+    font-weight:600;
+    color:#6b7280;
+}
+
+.profile-value{
+    color:#111827;
+}
+
+.logout-btn{
+    display:inline-block;
+    margin-top:30px;
+    background:#ef4444;
+    color:white;
+    text-decoration:none;
+    padding:12px 20px;
+    border-radius:8px;
+    font-weight:600;
+    transition:.2s;
+}
+
+.logout-btn:hover{
+    background:#dc2626;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="profile-container">
+
+    <div class="profile-card">
+
+        <div class="profile-header">
+
+            <div class="profile-avatar">
+                {% if user.first_name %}
+                    {{ user.first_name|slice:":1"|upper }}
+                {% else %}
+                    {{ user.username|slice:":1"|upper }}
+                {% endif %}
+            </div>
+
+            <div>
+                <h2 class="profile-name">
+                    {{ user.get_full_name|default:user.username }}
+                </h2>
+
+                <div class="profile-role">
+                    ProjectHub User
+                </div>
+            </div>
+
+        </div>
+
+        <div class="profile-grid">
+
+            <div class="profile-label">Username</div>
+            <div class="profile-value">{{ user.username }}</div>
+
+            <div class="profile-label">Email</div>
+            <div class="profile-value">
+                {{ user.email|default:"Not provided" }}
+            </div>
+
+            <div class="profile-label">First Name</div>
+            <div class="profile-value">
+                {{ user.first_name|default:"-" }}
+            </div>
+
+            <div class="profile-label">Last Name</div>
+            <div class="profile-value">
+                {{ user.last_name|default:"-" }}
+            </div>
+
+            <div class="profile-label">Joined</div>
+            <div class="profile-value">
+                {{ user.date_joined|date:"F d, Y" }}
+            </div>
+
+            <div class="profile-label">Last Login</div>
+            <div class="profile-value">
+                {{ user.last_login|date:"F d, Y H:i" }}
+            </div>
+
+        </div>
+
+        <a href="{% url 'account_logout' %}" class="logout-btn">
+            Logout
+        </a>
+
+    </div>
+
+</div>
+{% endblock %}

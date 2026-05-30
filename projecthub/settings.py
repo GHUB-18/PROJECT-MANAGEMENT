@@ -77,7 +77,7 @@ SITE_ID = 1
 #Authentication settings
 ACCOUNT_LOGIN_METHODS = {"username", "email"}
 ACCOUNT_SIGNUP_FIELDS = ["email*", "username*"]
-ACCOUNT_UNIQUE_EMAIL = True
+# ACCOUNT_UNIQUE_EMAIL = True
 ACCOUNT_EMAIL_VERIFICATION = 'none'  # Change to 'mandatory' in production
 ACCOUNT_LOGOUT_ON_GET = True
 
@@ -177,7 +177,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 # Use the names defined by the URL patterns
-LOGIN_URL = 'index'
+LOGIN_URL = 'account_login'  # Redirect to login page if not authenticated
 LOGIN_REDIRECT_URL = '/auth-redirect/'  
 LOGOUT_REDIRECT_URL = 'index'
 AUTH_USER_MODEL = 'accounts.User'
@@ -191,7 +191,7 @@ SOCIALACCOUNT_LOGIN_ON_GET = True
 SOCIALACCOUNT_AUTO_SIGNUP = True
 SOCIALACCOUNT_QUERY_EMAIL = True
 SOCIALACCOUNT_EMAIL_VERIFICATION = "none"
-ACCOUNT_EMAIL_REQUIRED = True
+# ACCOUNT_EMAIL_REQUIRED = True
 SESSION_EXPIRE_AT_BROWSER_CLOSE = False
 SESSION_COOKIE_SECURE = False  # Set to True in production with HTTPS
 
