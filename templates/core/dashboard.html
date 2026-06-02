@@ -5,393 +5,412 @@
 
 {% block extra_css %}
 <style>
-.project-grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fill,minmax(360px,1fr));
-    gap:24px;
-    align-items:start;
-}
+    *, *::before, *::after { box-sizing: border-box; }
 
-.project-card{
-    background:white;
-    border-radius:16px;
-    overflow:hidden;
-    border:1px solid #e5e7eb;
-    box-shadow:0 2px 8px rgba(0,0,0,.08);
-    transition:.2s;
-}
+    :root {
+        --ph-purple:  #7c3aed;
+        --ph-purple2: #6d28d9;
+        --ph-white:   #ffffff;
+        --ph-black:   #111827;
+        --ph-muted:   #6b7280;
+        --ph-border:  #e5e7eb;
+    }
 
-.project-card:hover{
-    transform:translateY(-4px);
-    box-shadow:0 12px 24px rgba(0,0,0,.08);
-}
+    .ph-wrapper { padding: 2rem 0; }
 
-.project-banner{
-    height:130px;
-    padding:24px;
-    position:relative;
-
-    background:linear-gradient(
-        135deg,
-        #7c3aed,
-        #5b21b6
-    );
-
-    color:white;
-}
-
-.project-banner h3{
-    margin:0;
-    font-size:24px;
-    font-weight:600;
-}
-
-.project-role{
-    display:block;
-    margin-top:8px;
-    opacity:.9;
-    font-size:14px;
-}
-
-.project-avatar{
-    width:72px;
-    height:72px;
-
-    border-radius:50%;
-
-    background:#a7f3d0;
-    color:#111827;
-
-    display:flex;
-    align-items:center;
-    justify-content:center;
-
-    font-size:28px;
-    font-weight:700;
-
-    position:absolute;
-    right:20px;
-    bottom:-36px;
-
-    border:4px solid white;
-}
-
-.project-body{
-    padding:56px 24px 20px;
-    min-height:160px;
-}
-
-.task-item{
-    display:flex;
-    flex-direction:column;
-    gap:4px;
-    margin-bottom:14px;
-}
-
-.task-item small{
-    color:#64748b;
-}
-
-.empty-tasks{
-    color:#64748b;
-    font-size:14px;
-}
-
-.project-footer{
-    border-top:1px solid #e5e7eb;
-    padding:16px 24px;
-    border-top:1px solid #e5e7eb;
-
-    display:flex;
-    justify-content:flex-end;
-    align-items:center;
-    gap:20px;
-}
-
-.project-footer a,
-.menu-btn{
-    border:none;
-    background:none;
-    cursor:pointer;
-    color:#6b7280;
-    font-size:18px;
-}
-
-.project-footer a:hover,
-.menu-btn:hover{
-    color:#7c3aed;
-}
-
-    /* 📋 Sub-Header Action Line Layout Rows */
-    .classroom-welcome-header {
+    /* ── Welcome Header ──────────────────────── */
+    .ph-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
         margin-bottom: 2.5rem;
-        width: 100%;
+        gap: 1rem;
+        flex-wrap: wrap;
     }
+    .ph-header h3 { margin: 0 0 .3rem; font-size: 1.6rem; font-weight: 600; color: var(--ph-black); }
+    .ph-header p  { margin: 0; font-size: .95rem; color: var(--ph-muted); }
 
-    .classroom-intro-text h3 {
-        margin: 0 0 0.35rem 0;
-        font-size: 1.65rem;
-        font-weight: 600;
-        color: var(--color-text-black);
-    }
-
-    .classroom-intro-text p {
-        margin: 0;
-        font-size: 0.95rem;
-        color: var(--color-text-muted);
-    }
-
-    .btn-create-classroom-card {
-        background-color: var(--color-purple-primary);
-        color: var(--color-surface-white) !important;
+    .ph-btn {
+        background: var(--ph-purple);
+        color: #fff !important;
         text-decoration: none;
-        padding: 0.65rem 1.35rem;
-        font-size: 0.9rem;
+        padding: .65rem 1.35rem;
+        font-size: .9rem;
         font-weight: 600;
-        border-radius: 6px;
-        transition: background-color 0.2s ease;
-        display: inline-block;
+        border-radius: 8px;
+        border: none;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        white-space: nowrap;
+        transition: background .2s;
     }
+    .ph-btn:hover { background: var(--ph-purple2); }
 
-    .btn-create-classroom-card:hover {
-        background-color: var(--color-purple-hover);
-    }
-
-    /* 📊 Google Classroom Horizontal Multi-Card Grid Frame Matrix */
-    .classroom-cards-matrix {
+    /* ── Grid ────────────────────────────────── */
+    .ph-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
-        gap: 2rem;
-        width: 100%;
-        box-sizing: border-box;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 1.5rem;
+        align-items: start;
     }
 
-    /* Standard Card Container Dimensions */
-    .classroom-project-card {
-        background-color: var(--color-surface-white);
-        border: 1px solid #e2e8f0;
-        border-radius: 12px;
-        overflow: hidden;
+    /* ── Card ────────────────────────────────── */
+    .ph-card {
+        background: var(--ph-white);
+        border-radius: 16px;
+        border: 1px solid var(--ph-border);
+        box-shadow: 0 2px 8px rgba(0,0,0,.06);
+        transition: transform .18s, box-shadow .18s;
+        cursor: pointer;
         display: flex;
         flex-direction: column;
-        height: 290px;
-        box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-        transition: box-shadow 0.2s ease, transform 0.15s ease;
+        position: relative;   /* avatar is positioned relative to this */
+        overflow: visible;    /* so avatar is never clipped */
     }
+    .ph-card:hover  { transform: translateY(-4px); box-shadow: 0 12px 28px rgba(0,0,0,.10); }
+    .ph-card:active { transform: translateY(-2px); }
 
-    .classroom-project-card:hover {
-        box-shadow: 0 4px 20px -2px rgba(124, 58, 237, 0.12), 0 2px 8px -1px rgba(0, 0, 0, 0.06);
-        transform: translateY(-2px);
-    }
-
-    /* Card Top Header Stripe Banner Panel (Theme Accent Banner Block) */
-    .classroom-card-banner {
-        background: linear-gradient(135deg, var(--color-purple-primary), #5b21b6);
-        padding: 1.5rem 1.25rem;
-        color: var(--color-surface-white);
-        height: 85px;
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-start;
+    /* ── Banner ──────────────────────────────── */
+    .ph-banner {
+        height: 160px;
+        padding: 20px 20px 0;
+        border-radius: 16px 16px 0 0;
+        overflow: hidden;          /* clips gradient to rounded corners */
         position: relative;
+        /* gradient applied by JS via inline style */
     }
-
-    .classroom-card-title-link {
-        color: var(--color-surface-white) !important;
-        font-size: 1.3rem;
+    .ph-banner-name {
+        margin: 0 0 8px;
+        font-size: 1.15rem;
         font-weight: 600;
-        text-decoration: none;
-        margin: 0 0 0.35rem 0;
+        color: #fff;
+        white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
-        white-space: nowrap;
-        display: block;
-        letter-spacing: -0.01em;
+        /* leave room so text doesn't overlap avatar area */
+        max-width: calc(100% - 64px);
+    }
+    .ph-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 3px 10px;
+        border-radius: 999px;
+        font-size: .72rem;
+        font-weight: 600;
+        background: rgba(255,255,255,.22);
+        color: #fff;
+        border: 1px solid rgba(255,255,255,.35);
     }
 
-    .classroom-card-title-link:hover {
-        text-decoration: underline !important;
-    }
-
-    .classroom-card-role-badge {
-        font-size: 0.8rem;
-        color: #e9d5ff;
-        font-weight: 500;
-    }
-
-    /* Lower Core Workframe Context Segment (Clear Clean White Block View) */
-    .classroom-card-body {
-        padding: 1.25rem;
-        flex-grow: 1;
-        display: flex;
-        flex-direction: column;
-        background-color: var(--color-surface-white);
-    }
-
-    .classroom-body-label {
-        font-size: 0.75rem;
+    /* ── Avatar ──────────────────────────────── */
+    /*
+     * Lives on .ph-card (overflow:visible), NOT inside .ph-banner,
+     * so it is never clipped by the banner's overflow:hidden.
+     * top = banner height (130) - half avatar height (24) = 106px
+     */
+    .ph-avatar {
+        position: absolute;
+        top: 106px;
+        right: 18px;
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        background: rgba(255,255,255,.28);
+        color: #fff;
+        font-size: 1.2rem;
         font-weight: 700;
-        color: var(--color-text-black);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 3px solid var(--ph-white);
+        box-shadow: 0 2px 8px rgba(0,0,0,.15);
+        z-index: 10;
+    }
+
+    /* ── Card Body ───────────────────────────── */
+    /*
+     * top padding = half avatar (24px) + gap (16px) = 40px
+     */
+    .ph-body {
+        padding: 40px 20px 16px;
+        flex: 1;
+    }
+    .ph-body-label {
+        font-size: .7rem;
+        font-weight: 700;
         text-transform: uppercase;
-        margin: 0 0 1rem 0;
-        letter-spacing: 0.06em;
-        border-bottom: 1px solid #f1f5f9;
-        padding-bottom: 0.25rem;
-    }
-
-    .classroom-task-stream-list {
-        list-style: none;
-        padding: 0;
-        margin: 0;
+        letter-spacing: .07em;
+        color: var(--ph-muted);
+        margin: 0 0 10px;
         display: flex;
-        flex-direction: column;
-        gap: 0.85rem;
-        overflow-y: auto;
+        align-items: center;
+        gap: 5px;
     }
+    .ph-tasks { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px; }
+    .ph-task  { display: flex; flex-direction: column; gap: 2px; }
+    .ph-task-name { font-size: .875rem; font-weight: 500; color: var(--ph-black); }
+    .ph-task-due  { font-size: .75rem; color: var(--ph-muted); display: flex; align-items: center; gap: 4px; }
+    .ph-task-due.overdue { color: #dc2626; font-weight: 500; }
+    .ph-no-tasks { font-size: .85rem; color: var(--ph-muted); display: flex; align-items: center; gap: 6px; }
 
-    .classroom-task-stream-row {
-        font-size: 0.875rem;
+    /* ── Card Footer ─────────────────────────── */
+    .ph-footer {
+        border-top: 1px solid var(--ph-border);
+        padding: 10px 18px;
         display: flex;
-        flex-direction: column;
+        justify-content: flex-end;
+        align-items: center;
+        gap: 2px;
     }
-
-    .classroom-task-title {
-        font-weight: 500;
-        color: var(--color-text-black);
+    .ph-icon-btn {
+        width: 34px; height: 34px;
+        border: none; background: none;
+        cursor: pointer;
+        color: var(--ph-muted);
+        font-size: 17px;
+        border-radius: 8px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
         text-decoration: none;
+        transition: color .15s, background .15s;
     }
-    
-    .classroom-task-title:hover {
-        color: var(--color-purple-primary);
-    }
+    .ph-icon-btn:hover { color: var(--ph-purple); background: #f3f0ff; }
 
-    .classroom-task-due {
-        font-size: 0.75rem;
-        color: var(--color-text-muted);
-        margin-top: 0.2rem;
+    /* ── Dropdown ────────────────────────────── */
+    .ph-dropdown { position: relative; }
+    .ph-menu {
+        display: none;
+        position: absolute;
+        right: 0;
+        bottom: calc(100% + 6px);
+        background: var(--ph-white);
+        border: 1px solid var(--ph-border);
+        border-radius: 10px;
+        box-shadow: 0 8px 24px rgba(0,0,0,.10);
+        z-index: 200;
+        min-width: 160px;
+        padding: 5px 0;
+        animation: menuIn .12s ease;
     }
-
-    .classroom-tasks-empty-msg {
-        font-size: 0.85rem;
-        color: var(--color-text-muted);
-        padding-top: 0.5rem;
+    @keyframes menuIn {
+        from { opacity: 0; transform: translateY(6px); }
+        to   { opacity: 1; transform: translateY(0); }
     }
+    .ph-menu.open { display: block; }
+    .ph-menu-item {
+        display: flex; align-items: center; gap: 9px;
+        padding: 9px 14px;
+        font-size: .85rem; color: var(--ph-black);
+        cursor: pointer; border: none; background: none;
+        width: 100%; text-align: left;
+        font-family: inherit;
+        transition: background .12s;
+    }
+    .ph-menu-item:hover { background: #f9fafb; }
+    .ph-menu-item i { font-size: 15px; color: var(--ph-muted); }
+    .ph-menu-divider { height: 1px; background: var(--ph-border); margin: 4px 0; }
+    .ph-menu-item.danger      { color: #dc2626; }
+    .ph-menu-item.danger i    { color: #dc2626; }
+    .ph-menu-item.danger:hover { background: #fef2f2; }
+    .ph-leave-form { margin: 0; padding: 0; }
+    .ph-leave-form button { font-family: inherit; }
 
-    /* Universal Global Layout Empty Fallback State Card Window */
-    .classroom-global-empty-panel {
+    /* ── Empty State ─────────────────────────── */
+    .ph-empty {
         grid-column: 1 / -1;
         text-align: center;
         padding: 5rem 2rem;
-        border: 2px dashed #e2e8f0;
-        border-radius: 12px;
-        color: var(--color-text-muted);
-        background-color: var(--color-surface-white);
+        border: 2px dashed var(--ph-border);
+        border-radius: 16px;
+        background: var(--ph-white);
     }
+    .ph-empty h2 { font-size: 1.4rem; font-weight: 600; color: var(--ph-black); margin: 0 0 .5rem; }
+    .ph-empty p  { color: var(--ph-muted); font-size: .95rem; margin: 0 0 1.5rem; }
 </style>
 {% endblock %}
 
-{% block content %}
-<div class="classroom-dashboard-wrapper">
 
-    <div class="classroom-welcome-header">
-        <div class="classroom-intro-text">
-            <h3>Welcome back, {{ request.user.username }}</h3>
-            <p>Track assignments and workspace boards across your active Projects.</p>
-        </div>
+{% block content %}
+<div class="ph-wrapper">
+
+    {# ── Header ── #}
+    <div class="ph-header">
         <div>
-            <a href="#" onclick="alert('Redirect to project creation form view window pane goes here.'); return false;" class="btn-create-classroom-card">
-                + Create Class
-            </a>
+            <h3>Welcome back, {{ request.user.first_name|default:request.user.username }}</h3>
+            <p>Track assignments and workspace boards across your active projects.</p>
         </div>
+        <a href="{% url 'projects:create_project' %}" class="ph-btn">
+            <i class="fas fa-plus"></i> Create Project
+        </a>
     </div>
 
-    <div class="project-grid">
-
+    {# ── Grid ── #}
+    <div class="ph-grid">
         {% for item in projects %}
-            <div class="project-card">
 
-                <div class="project-banner">
+        <div class="ph-card"
+             data-href="{% url 'projects:project_detail' item.id %}"
+             data-palette-index="{{ forloop.counter0 }}"
+             onclick="cardClick(event, this)"
+             role="link" tabindex="0"
+             aria-label="Open {{ item.name }}"
+             onkeydown="if(event.key==='Enter')cardClick(event,this)">
 
-                    <h3>{{ item.name }}</h3>
-
-                    <span class="project-role">
-                        {% if item.owner == request.user %}
-                            Workspace Owner
-                        {% else %}
-                            Collaborator
-                        {% endif %}
-                    </span>
-
-                    <div class="project-avatar">
-                        {% if request.user.first_name %}
-                            {{ request.user.first_name|slice:":1"|upper }}
-                        {% else %}
-                            {{ request.user.username|slice:":1"|upper }}
-                        {% endif %}
-                    </div>
-
-                </div>
-
-            <div class="project-body">
-
-                {% for task in assigned_tasks %}
-                    {% if task.project.id == item.id %}
-                        <div class="task-item">
-                            <strong>{{ task.title }}</strong>
-
-                            {% if task.due_date %}
-                                <small>
-                                    Due {{ task.due_date|date:"M d" }}
-                                </small>
-                            {% endif %}
-                        </div>
-                    {% endif %}
-                {% empty %}
-                    <div class="empty-tasks">
-                        🎉 No upcoming tasks
-                    </div>
-                {% endfor %}
-
+            {# Banner — gradient applied by JS #}
+            <div class="ph-banner" data-banner>
+                <p class="ph-banner-name">{{ item.name }}</p>
+                {% if item.owner == request.user %}
+                    <span class="ph-badge"><i class="fas fa-crown" style="font-size:9px"></i> Owner</span>
+                {% else %}
+                    <span class="ph-badge"><i class="fas fa-user" style="font-size:9px"></i> Collaborator</span>
+                {% endif %}
             </div>
 
-            <div class="project-footer">
+            {# Avatar — child of .ph-card so overflow:visible applies #}
+            <div class="ph-avatar">
+                {% if request.user.first_name %}{{ request.user.first_name|slice:":1"|upper }}
+                {% else %}{{ request.user.username|slice:":1"|upper }}{% endif %}
+            </div>
 
-                <a href="{% url 'projects:project_detail' item.id %}">
+            {# Body #}
+            <div class="ph-body">
+                <div class="ph-body-label">
+                    <i class="fas fa-tasks" style="font-size:11px"></i> Upcoming Tasks
+                </div>
+                <ul class="ph-tasks">
+                    {% for task in assigned_tasks %}
+                        {% if task.project.id == item.id %}
+                            <li class="ph-task">
+                                <span class="ph-task-name">{{ task.title }}</span>
+                                {% if task.due_date %}
+                                    <span class="ph-task-due {% if task.due_date < today %}overdue{% endif %}">
+                                        <i class="fas fa-calendar-alt"></i>
+                                        Due {{ task.due_date|date:"M d" }}
+                                        {% if task.due_date < today %}&nbsp;&middot; Overdue{% endif %}
+                                    </span>
+                                {% endif %}
+                            </li>
+                        {% endif %}
+                    {% empty %}
+                        <li class="ph-no-tasks">
+                            <i class="fas fa-check-circle" style="color:#10b981"></i> No upcoming tasks
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            {# Footer #}
+            <div class="ph-footer" onclick="event.stopPropagation()">
+
+                <a href="{% url 'projects:project_detail' item.id %}"
+                   class="ph-icon-btn" title="Members" aria-label="Members">
                     <i class="fas fa-users"></i>
                 </a>
 
-                <a href="#">
+                <a href="#" class="ph-icon-btn" title="Files" aria-label="Files">
                     <i class="fas fa-folder"></i>
                 </a>
 
-                <button class="menu-btn">
-                    <i class="fas fa-ellipsis-v"></i>
-                </button>
+                <div class="ph-dropdown">
+                    <button class="ph-icon-btn" title="More options"
+                            onclick="toggleMenu(event,'menu-{{ item.id }}')">
+                        <i class="fas fa-ellipsis-v"></i>
+                    </button>
+
+                    <div class="ph-menu" id="menu-{{ item.id }}" role="menu">
+                        {% if item.owner == request.user %}
+                            <button class="ph-menu-item" role="menuitem"
+                                    onclick="go('{% url 'projects:edit_project' item.id %}')">
+                                <i class="fas fa-edit"></i> Edit project
+                            </button>
+                            <button class="ph-menu-item" role="menuitem"
+                                    onclick="go('{% url 'projects:project_settings' item.id %}')">
+                                <i class="fas fa-cog"></i> Settings
+                            </button>
+                            <div class="ph-menu-divider"></div>
+                            <button class="ph-menu-item danger" role="menuitem"
+                                    onclick="doArchive('{{ item.name|escapejs }}','{% url 'projects:archive_project' item.id %}')">
+                                <i class="fas fa-archive"></i> Archive project
+                            </button>
+                        {% else %}
+                            <form class="ph-leave-form" method="POST"
+                                  action="{% url 'projects:leave_project' item.id %}"
+                                  onsubmit="return doLeave('{{ item.name|escapejs }}')">
+                                {% csrf_token %}
+                                <button type="submit" class="ph-menu-item danger" role="menuitem">
+                                    <i class="fas fa-sign-out-alt"></i> Leave project
+                                </button>
+                            </form>
+                        {% endif %}
+                    </div>
+                </div>
 
             </div>
-
         </div>
+
         {% empty %}
-
-            <div class="classroom-global-empty-panel">
-                <h2>No Projects Yet</h2>
-
-                <p>
-                    Create your first project and start collaborating with your team.
-                </p>
-
-                <a href="#"
-                class="btn-create-classroom-card">
-                    + Create Project
-                </a>
+        <div class="ph-empty">
+            <h2>No Projects Yet</h2>
+            <p>Create your first project and start collaborating with your team.</p>
+            <a href="{% url 'projects:create_project' %}" class="ph-btn">
+                <i class="fas fa-plus"></i> Create Project
+            </a>
         </div>
-
         {% endfor %}
-
     </div>
 
 </div>
+{% endblock %}
+
+
+{% block extra_js %}
+<script>
+const PALETTES = [
+    ['#b45309','#92400e'], ['#0369a1','#075985'], ['#166534','#14532d'],
+    ['#9333ea','#7e22ce'], ['#0891b2','#0e7490'], ['#be185d','#9d174d'],
+    ['#c2410c','#9a3412'], ['#4338ca','#3730a3'], ['#0f766e','#115e59'],
+    ['#d97706','#b45309'], ['#dc2626','#b91c1c'], ['#0284c7','#0369a1'],
+    ['#16a34a','#15803d'], ['#db2777','#be185d'],
+];
+
+document.querySelectorAll('.ph-card').forEach(card => {
+    const idx = parseInt(card.dataset.paletteIndex, 10) % PALETTES.length;
+    const [c1, c2] = PALETTES[idx];
+    const banner = card.querySelector('[data-banner]');
+    if (banner) banner.style.background = `linear-gradient(135deg, ${c1}, ${c2})`;
+});
+
+function cardClick(e, card) {
+    if (e.target.closest('.ph-footer')) return;
+    window.location.href = card.dataset.href;
+}
+
+function toggleMenu(e, id) {
+    e.stopPropagation();
+    const m = document.getElementById(id);
+    const wasOpen = m.classList.contains('open');
+    closeMenus();
+    if (!wasOpen) m.classList.add('open');
+}
+
+function closeMenus() {
+    document.querySelectorAll('.ph-menu.open').forEach(m => m.classList.remove('open'));
+}
+
+document.addEventListener('click', closeMenus);
+
+function go(url) { window.location.href = url; }
+
+function doLeave(name) {
+    return confirm(`Leave "${name}"?\nYou will lose access immediately.`);
+}
+
+function doArchive(name, url) {
+    if (confirm(`Archive "${name}"?\nIt can be restored later.`)) window.location.href = url;
+}
+</script>
 {% endblock %}

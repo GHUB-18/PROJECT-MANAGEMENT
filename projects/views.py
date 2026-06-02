@@ -132,3 +132,17 @@ def edit_project(request, project_id):
         return redirect('projects:project_detail', project_id=project.id)
 
     return render(request, 'projects/edit_project.html', {'form': form, 'project': project})
+
+@login_required
+def project_settings(request, project_id):
+    # TODO: build settings page
+    project = get_object_or_404(Project, id=project_id)
+    return redirect('projects:project_detail', project_id=project_id)
+
+
+@login_required
+def archive_project(request, project_id):
+    # TODO: implement archive logic
+    project = get_object_or_404(Project, id=project_id, owner=request.user)
+    messages.success(request, f'"{project.name}" has been archived.')
+    return redirect('projects:dashboard')
