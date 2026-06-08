@@ -1,28 +1,127 @@
 {% extends 'base.html' %}
+
+{% block title %}Tasks{% endblock %}
+
 {% block content %}
-<h2>Your Tasks</h2>
-<div class="card mt-3">
-    <table class="task-table" style="width: 100%; border-collapse: collapse;">
-        <thead>
-            <tr style="text-align: left; border-bottom: 2px solid #eee;">
-                <th class="p-3">Status</th>
-                <th>Task Name</th>
-                <th>Project</th>
-                <th>Due Date</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for task in tasks %}
-            <tr class="border-bottom">
-                <td class="p-3"><span class="badge badge-{{ task.status|lower }}">{{ task.status }}</span></td>
-                <td><strong>{{ task.title }}</strong></td>
-                <td>{{ task.project.name }}</td>
-                <td>{{ task.due_date|date:"M d, Y" }}</td>
-            </tr>
-            {% empty %}
-            <tr><td colspan="4" class="p-4 text-center">No tasks assigned to you.</td></tr>
-            {% endfor %}
-        </tbody>
-    </table>
+
+<div style="display:flex; flex-direction:column; gap:1.5rem;">
+
+    <div class="card">
+        <div style="
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+        ">
+            <div>
+                <h2>Project Tasks</h2>
+                <p style="color:#64748B;">
+                    Manage and track project activities.
+                </p>
+            </div>
+
+            {% if project %}
+            <a href="{% url 'tasks:create_task' project.id %}"
+               class="btn-primary">
+                + New Task
+            </a>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="card">
+
+        <table style="
+            width:100%;
+            border-collapse:collapse;
+        ">
+            <thead>
+                <tr style="
+                    border-bottom:2px solid var(--color-border);
+                ">
+                    <th style="padding:1rem; text-align:left;">Task</th>
+                    <th style="padding:1rem; text-align:left;">Assigned To</th>
+                    <th style="padding:1rem; text-align:left;">Status</th>
+                    <th style="padding:1rem; text-align:left;">Due Date</th>
+                    <th style="padding:1rem; text-align:left;">Actions</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                {% for task in tasks %}
+                <tr style="
+                    border-bottom:1px solid var(--color-border);
+                ">
+
+                    <td style="padding:1rem;">
+                        <strong>{{ task.title }}</strong>
+                    </td>
+
+                    <td style="padding:1rem;">
+                        {{ task.assigned_to }}
+                    </td>
+
+                    <td style="padding:1rem;">
+
+                        {% if task.status == 'Completed' %}
+                            <span class="badge-success">
+                                Completed
+                            </span>
+
+                        {% elif task.status == 'In Progress' %}
+                            <span class="badge-pink">
+                                In Progress
+                            </span>
+
+                        {% else %}
+                            <span class="badge-secondary">
+                                Pending
+                            </span>
+                        {% endif %}
+
+                    </td>
+
+                    <td style="padding:1rem;">
+                        {{ task.due_date|date:"M d, Y" }}
+                    </td>
+
+                    <td style="padding:1rem;">
+
+                        {% if task.status != 'Completed' %}
+                        <a href="{% url 'tasks:confirm_complete' task.id %}"
+                           style="
+                           color:var(--color-blue-accent);
+                           text-decoration:none;
+                           font-weight:600;
+                           ">
+                            Complete
+                        </a>
+                        {% endif %}
+
+                    </td>
+
+                </tr>
+
+                {% empty %}
+
+                <tr>
+                    <td colspan="5"
+                        style="
+                        padding:2rem;
+                        text-align:center;
+                        color:#64748B;
+                        ">
+                        No tasks found.
+                    </td>
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+        </table>
+
+    </div>
+
 </div>
+
 {% endblock %}
