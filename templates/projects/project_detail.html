@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block page_title %}{{ project.name }}{% endblock %}
+{% block page_title %}{{ project.title }}{% endblock %}
 
 {% block extra_head %}
 <style>
@@ -242,7 +242,7 @@
             <p class="owner-tag">
                 Managed by <strong>{{ project.owner.get_full_name|default:project.owner.username }}</strong>
             </p>
-            <h1>{{ project.name }}</h1>
+            <h1>{{ project.title }}</h1>
 
             <div class="badge-row">
                 <span class="badge-member-count">{{ project.members.count }} Active Members</span>

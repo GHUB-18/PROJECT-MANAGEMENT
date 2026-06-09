@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block page_title %}{{ project.name }} (Admin Center){% endblock %}
+{% block page_title %}{{ project.title }} (Admin Center){% endblock %}
 
 {% block extra_css %}
 <style>
@@ -289,7 +289,7 @@
 
     <div class="admin-header-deck">
         <div class="admin-meta-info">
-            <h1>{{ project.name }}</h1>
+            <h1>{{ project.title }}</h1>
             <div class="admin-badge-row">
                 <span class="badge-admin-label">Workspace Control Box</span>
                 <span class="badge-member-count">{{ project.members.count }} Members Team Size</span>

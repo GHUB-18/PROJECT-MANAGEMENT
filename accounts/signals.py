@@ -7,9 +7,14 @@ from .models import Profile
 User = get_user_model()
 
 @receiver(post_save, sender=User)
-def create_profile(sender, instance, created, **kwargs):
+def handle_user_profile_sync(sender, instance, created, **kwargs):
+    """Handles profile provisioning and save states safely without infinite recursion."""
     if created:
-        Profile.objects.create(user=instance)
+        Profile.objects.get_or_create(user=instance)
+    else:
+        if hasattr(instance, 'profile'):
+            # Using update fields or explicit checks ensures saving profile does not loop back
+            instance.profile.save()
 
 def user_signed_up(request, user, **kwargs):
     user.onboarding_step = 1

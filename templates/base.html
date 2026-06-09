@@ -330,7 +330,7 @@
                         {% for project in user_projects %}
                             <li>
                                 <a href="{% url 'project_detail' project.id %}" class="sidebar-sub-link">
-                                    • {{ project.name }}
+                                    • {{ project.title }}
                                 </a>
                             </li>
                         {% endfor %}

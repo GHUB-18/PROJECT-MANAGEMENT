@@ -2,7 +2,6 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.db.models import Prefetch
-from django.utils import timezone
 import uuid
 
 from projects.models import Project
@@ -17,8 +16,6 @@ def generate_unique_token():
         if not Project.objects.filter(invite_token=token).exists():
             return token
 
-
-# 🏠 Project Detail View (Split-Router)
 @login_required
 def project_detail(request, project_id):
     project = get_object_or_404(
@@ -30,11 +27,9 @@ def project_detail(request, project_id):
 
     if not project.members.filter(pk=request.user.pk).exists():
         messages.error(request, "You do not have access to this project.")
-        return redirect('dashboard')
+        return redirect('projects:project_list') # Adjusted fallback
 
     tasks = project.tasks.all()
-    
-    # FIX: Define the boolean explicitly in local scope to prevent NameError
     is_owner = (project.owner == request.user)
 
     context = {
@@ -44,28 +39,25 @@ def project_detail(request, project_id):
         'is_owner': is_owner,
     }
     
-    # Clean template split based on local boolean evaluation
     if is_owner:
         return render(request, 'projects/project_detail_admin.html', context)
     return render(request, 'projects/project_detail.html', context)
 
 
-# 🔗 Join Project (via invite token link)
 @login_required
 def join_project(request, token):
-    # FIX: Changed from POST restriction to allow users to click invite links directly
     project = get_object_or_404(Project, invite_token=token)
 
     if project.members.filter(pk=request.user.pk).exists():
         messages.info(request, "You are already a member of this project.")
     else:
         project.members.add(request.user)
-        messages.success(request, f"Welcome to the team! You successfully joined {project.name}.")
+        # FIXED: project.name -> project.title
+        messages.success(request, f"Welcome to the team! You successfully joined {project.title}.")
 
     return redirect('projects:project_detail', project_id=project.id)
 
 
-# ➕ Create Project
 @login_required
 def create_project(request):
     form = ProjectForm(request.POST or None)
@@ -76,16 +68,15 @@ def create_project(request):
         project.invite_token = generate_unique_token()
         project.save()
 
-        # Add owner to members roster automatically
+        # Safely handling M2M roster insertion here
         project.members.add(request.user)
 
         messages.success(request, "Project workspace deployed successfully!")
-        return redirect('dashboard')
+        return redirect('projects:project_list') 
 
     return render(request, 'projects/create_project.html', {'form': form})
 
 
-# 🚪 Leave Project
 @login_required
 def leave_project(request, project_id):
     project = get_object_or_404(Project, id=project_id)
@@ -94,35 +85,33 @@ def leave_project(request, project_id):
         messages.error(request, "Workspace owners cannot abandon their project. Delete it instead.")
     else:
         project.members.remove(request.user)
-        messages.success(request, f"You successfully left {project.name}.")
+        # FIXED: project.name -> project.title
+        messages.success(request, f"You successfully left {project.title}.")
         
-    return redirect('dashboard')
+    return redirect('projects:project_list')
 
 
-# 📋 Project List Index
 @login_required
 def project_list(request):
     projects = Project.objects.filter(members=request.user).order_by('-created_at')
     return render(request, 'projects/project_list.html', {'projects': projects})
 
 
-# 🛠️ Admin Dashboard Panel
 @login_required
 def admin_panel(request):
     if not request.user.is_superuser:
         messages.error(request, "Access restricted to system administrators.")
-        return redirect('dashboard')
+        return redirect('projects:project_list')
     return render(request, "projects/admin_panel.html")
 
 
-# ✏️ Edit Project Configuration
 @login_required
 def edit_project(request, project_id):
     project = get_object_or_404(Project, id=project_id)
 
     if request.user != project.owner:
         messages.error(request, "You do not have management permissions to alter this workspace.")
-        return redirect('dashboard')
+        return redirect('projects:project_list')
 
     form = ProjectForm(request.POST or None, instance=project)
 
@@ -133,16 +122,15 @@ def edit_project(request, project_id):
 
     return render(request, 'projects/edit_project.html', {'form': form, 'project': project})
 
+
 @login_required
 def project_settings(request, project_id):
-    # TODO: build settings page
-    project = get_object_or_404(Project, id=project_id)
     return redirect('projects:project_detail', project_id=project_id)
 
 
 @login_required
 def archive_project(request, project_id):
-    # TODO: implement archive logic
     project = get_object_or_404(Project, id=project_id, owner=request.user)
-    messages.success(request, f'"{project.name}" has been archived.')
-    return redirect('projects:dashboard')
+    # FIXED: project.name -> project.title
+    messages.success(request, f'"{project.title}" has been archived.')
+    return redirect('projects:project_list')

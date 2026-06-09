@@ -3,125 +3,57 @@
 {% block title %}Tasks{% endblock %}
 
 {% block content %}
-
-<div style="display:flex; flex-direction:column; gap:1.5rem;">
-
+<div style="max-width: 1100px; margin: auto;">
+    <h2 style="margin-bottom: 1.5rem;">Your Tasks</h2>
+    
     <div class="card">
-        <div style="
-            display:flex;
-            justify-content:space-between;
-            align-items:center;
-        ">
-            <div>
-                <h2>Project Tasks</h2>
-                <p style="color:#64748B;">
-                    Manage and track project activities.
-                </p>
-            </div>
-
-            {% if project %}
-            <a href="{% url 'tasks:create_task' project.id %}"
-               class="btn-primary">
-                + New Task
-            </a>
-            {% endif %}
-        </div>
-    </div>
-
-    <div class="card">
-
-        <table style="
-            width:100%;
-            border-collapse:collapse;
-        ">
+        <table class="task-table" style="width: 100%; border-collapse: collapse; text-align: left;">
             <thead>
-                <tr style="
-                    border-bottom:2px solid var(--color-border);
-                ">
-                    <th style="padding:1rem; text-align:left;">Task</th>
-                    <th style="padding:1rem; text-align:left;">Assigned To</th>
-                    <th style="padding:1rem; text-align:left;">Status</th>
-                    <th style="padding:1rem; text-align:left;">Due Date</th>
-                    <th style="padding:1rem; text-align:left;">Actions</th>
+                <tr style="border-bottom: 2px solid #E2E8F0;">
+                    <th style="padding: 1rem;">Status</th>
+                    <th style="padding: 1rem;">Task Name</th>
+                    <th style="padding: 1rem;">Project</th>
+                    <th style="padding: 1rem;">Due Date</th>
+                    <th style="padding: 1rem; text-align: right;">Actions</th>
                 </tr>
             </thead>
-
             <tbody>
-
                 {% for task in tasks %}
-                <tr style="
-                    border-bottom:1px solid var(--color-border);
-                ">
-
-                    <td style="padding:1rem;">
+                <tr style="border-bottom: 1px solid #E2E8F0;">
+                    <td style="padding: 1rem;">
+                        <span class="badge badge-{{ task.status|lower }}">{{ task.get_status_display|default:task.status }}</span>
+                    </td>
+                    <td style="padding: 1rem;">
                         <strong>{{ task.title }}</strong>
                     </td>
-
-                    <td style="padding:1rem;">
-                        {{ task.assigned_to }}
+                    <td style="padding: 1rem; color: #4A5568;">
+                        {{ task.project.title|default:task.project.name }}
                     </td>
-
-                    <td style="padding:1rem;">
-
-                        {% if task.status == 'Completed' %}
-                            <span class="badge-success">
-                                Completed
-                            </span>
-
-                        {% elif task.status == 'In Progress' %}
-                            <span class="badge-pink">
-                                In Progress
-                            </span>
-
-                        {% else %}
-                            <span class="badge-secondary">
-                                Pending
-                            </span>
-                        {% endif %}
-
+                    <td style="padding: 1rem; color: #718096;">
+                        {{ task.due_date|date:"M d, Y"|default:"No due date" }}
                     </td>
-
-                    <td style="padding:1rem;">
-                        {{ task.due_date|date:"M d, Y" }}
-                    </td>
-
-                    <td style="padding:1rem;">
-
-                        {% if task.status != 'Completed' %}
-                        <a href="{% url 'tasks:confirm_complete' task.id %}"
-                           style="
-                           color:var(--color-blue-accent);
-                           text-decoration:none;
-                           font-weight:600;
-                           ">
-                            Complete
+                    <td style="padding: 1rem; text-align: right;">
+                        {% if task.status != 'done' %}
+                        <a href="{% url 'tasks:complete_task' task.id %}" 
+                           style="color: #10B981; font-weight: 600; text-decoration: none; margin-right: 1rem;">
+                            ✓ Complete
                         </a>
                         {% endif %}
-
+                        <a href="{% url 'tasks:edit_task' task.id %}" 
+                           style="color: #4F46E5; font-weight: 600; text-decoration: none;">
+                            Edit
+                        </a>
                     </td>
-
                 </tr>
-
                 {% empty %}
-
                 <tr>
-                    <td colspan="5"
-                        style="
-                        padding:2rem;
-                        text-align:center;
-                        color:#64748B;
-                        ">
-                        No tasks found.
+                    <td colspan="5" style="padding: 2.5rem; text-align: center; color: #A0AEC0;">
+                        No tasks assigned to you.
                     </td>
                 </tr>
-
                 {% endfor %}
-
             </tbody>
         </table>
-
     </div>
-
 </div>
-
 {% endblock %}

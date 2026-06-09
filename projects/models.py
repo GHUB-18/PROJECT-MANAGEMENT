@@ -59,8 +59,6 @@ class Project(models.Model):
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
-        if self.owner and self.owner not in self.members.all():
-            self.members.add(self.owner)
 
     def __str__(self):
         return self.title

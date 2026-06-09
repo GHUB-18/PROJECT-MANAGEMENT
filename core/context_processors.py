@@ -18,7 +18,7 @@ def assigned_tasks_processor(request):
 
 def sidebar_projects(request):
     if request.user.is_authenticated:
-        # Fetching all projects the logged-in user participates in
-        user_projects = Project.objects.filter(assigned_to=request.user) # Or your specific lookup
+        # FIXED: Changed 'assigned_to' to 'members' to align with the Project model's architecture
+        user_projects = Project.objects.filter(members=request.user)
         return {'user_projects': user_projects}
     return {'user_projects': []}
