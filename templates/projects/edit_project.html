@@ -1,11 +1,40 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Edit Project | ProjectHub{% endblock %}
+{% block page_title %}Edit Project{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/edit_project.css' %}">
+{% endblock %}
 
 {% block content %}
-<h2>Edit Project</h2>
+<div class="ep-wrapper">
 
-<form method="POST">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Save</button>
-</form>
+    <h1 class="ep-heading">Edit Project</h1>
+    <p class="ep-subheading">Update your project details below.</p>
+
+    <div class="ep-card">
+
+        {% if form.non_field_errors %}
+            <div class="ep-errors">
+                {% for error in form.non_field_errors %}{{ error }}{% endfor %}
+            </div>
+        {% endif %}
+
+        <form method="POST" novalidate>
+            {% csrf_token %}
+
+            {{ form.as_p }}
+
+            <hr class="ep-divider">
+
+            <div class="ep-actions">
+                <a href="{% url 'projects:dashboard' %}" class="ep-btn-cancel">Cancel</a>
+                <button type="submit" class="ep-btn-save">Save Changes</button>
+            </div>
+        </form>
+
+    </div>
+</div>
 {% endblock %}

@@ -36,6 +36,7 @@ class Task(models.Model):
     priority = models.CharField(max_length=10, choices=PRIORITY_CHOICES, default='medium')
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='todo')
     created_at = models.DateTimeField(auto_now_add=True)
+    completed_at = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
         return self.title
@@ -46,4 +47,5 @@ class Task(models.Model):
                 raise ValidationError("Assigned user must be a member of this project.")
 
     def save(self, *args, **kwargs):
+        self.full_clean() # 👈 This triggers clean() automatically before database insertion
         super().save(*args, **kwargs)

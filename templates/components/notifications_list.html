@@ -1,8 +1,128 @@
-<h1>Notifications</h1>
-<ul>
-  {% for note in notifications %}
-    <li>{{ note.message }} - {{ note.created_at }}</li>
-  {% empty %}
-    <li>No notifications</li>
-  {% endfor %}
-</ul>
+{% extends "base.html" %}
+{% load static %}
+
+{% block extra_head %}
+<style>
+  /* Container Constraints */
+  .notification-wrapper {
+    max-width: 768px;
+    margin: 0 auto;
+    padding: 1rem 0;
+  }
+
+  /* Header Context Layout */
+  .notification-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #f3e8ff;
+  }
+
+  .notification-header h1 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #000000;
+    margin: 0;
+    letter-spacing: -0.02em;
+  }
+
+  /* Core Feed Block */
+  .notification-feed {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  /* Individual Notification Item Card */
+  .notification-item {
+    background-color: #ffffff;
+    border: 1px solid #f3e8ff;
+    border-left: 4px solid #7c3aed; /* Signature Purple Left Border Accent */
+    padding: 1.25rem 1.5rem;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    box-shadow: 0 4px 6px rgba(124, 58, 237, 0.02);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+
+  .notification-item:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 12px rgba(124, 58, 237, 0.04);
+  }
+
+  /* Message Typography */
+  .notification-message {
+    font-size: 0.975rem;
+    font-weight: 500;
+    line-height: 1.5;
+    color: #000000;
+    margin: 0;
+  }
+
+  /* Timestamp Subtext Meta info */
+  .notification-meta {
+    font-size: 0.8rem;
+    color: #9ca3af;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+
+  /* 📥 Clean Empty/Blank Inbox State */
+  .notification-empty {
+    background-color: #ffffff;
+    border: 1px dashed #d1d5db;
+    padding: 3.5rem 2rem;
+    border-radius: 16px;
+    text-align: center;
+    color: #4b5563;
+  }
+
+  .empty-icon {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    display: block;
+  }
+
+  .notification-empty p {
+    margin: 0;
+    font-size: 0.95rem;
+    font-weight: 500;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="notification-wrapper">
+  
+  <div class="notification-header">
+    <h1>Notifications</h1>
+  </div>
+
+  <ul class="notification-feed">
+    {% for note in notifications %}
+      <li class="notification-item">
+        <p class="notification-message">{{ note.message }}</p>
+        <div class="notification-meta">
+          <span>🕒</span>
+          <time datetime="{{ note.created_at|date:'Y-m-d H:i' }}">{{ note.created_at|date:"M d, Y • g:i A" }}</time>
+        </div>
+      </li>
+    {% empty %}
+      <li class="notification-empty">
+        <span class="empty-icon">🔔</span>
+        <p>Your inbox is completely clear. No new notifications right now!</p>
+      </li>
+    {% endfor %}
+  </ul>
+
+</div>
+{% endblock %}

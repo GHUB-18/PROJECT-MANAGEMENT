@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Project Hub{% endblock %}</title>
+    
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    
+    {% block extra_head %}{% endblock %}
+</head>
+<body class="bg-gray-50 min-h-screen flex flex-col justify-between">
+
+    <header class="w-full bg-white border-b border-gray-100 py-4 px-6 shadow-sm">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <span class="text-xl font-bold text-indigo-600 tracking-tight">Project Hub</span>
+            <span class="text-sm text-gray-500">Documentation</span>
+        </div>
+    </header>
+
+    <main class="flex-grow flex items-center justify-center p-6">
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <div></div>
+
+</body>
+</html>

@@ -1,165 +1,217 @@
-/* Container */
+/* ==========================================================================
+   Project Hub - Authentication & Onboarding Stylesheet
+   Color Scheme: Purple (#7c3aed), White (#ffffff), Black (#000000)
+   ========================================================================== */
+
+/* 🌐 Main Canvas Container */
 .container {
   display: flex;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background: #f9fafb;
+  background-color: #fbfbfe; /* Soft white background with a hint of tint */
+  padding: 1.5rem;
+  box-sizing: border-box;
 }
 
-/* Auth Box */
+/* ⬜ The Authentication Card Box */
 .auth-box {
-  background: #fff;
-  padding: 2rem;
-  border-radius: 10px;
-  box-shadow: 0 6px 20px rgba(0,0,0,0.1);
-  max-width: 400px;
+  background: #ffffff;
+  padding: 2.5rem 2rem;
+  border-radius: 16px;
+  box-shadow: 0 10px 25px rgba(124, 58, 237, 0.05), 0 4px 12px rgba(0, 0, 0, 0.03); /* Soft purple hue shadow */
+  border: 1px solid #f3e8ff; /* Soft purple border trace */
+  max-width: 420px;
   width: 100%;
   text-align: center;
+  box-sizing: border-box;
 }
 
+/* 🖤 Typography */
 .auth-box h2 {
+  font-size: 1.75rem;
+  font-weight: 800;
   margin-bottom: 0.5rem;
-  color: #111827;
+  color: #000000; /* Sharp, clean black headings */
+  letter-spacing: -0.025em;
 }
 
 .auth-box p {
-  margin-bottom: 1.5rem;
-  color: #6b7280;
+  font-size: 0.925rem;
+  line-height: 1.5;
+  margin-bottom: 1.75rem;
+  color: #4b5563; /* Dark gray for highly readable body copy */
 }
 
-/* GitHub Button */
+/* 🪪 OAuth GitHub Button Wrapper */
 .github-btn {
-  display: block;
-  background: #24292f;
-  color: #fff;
-  padding: 0.75rem;
-  border-radius: 6px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background-color: #7c3aed; /* Vibrant Primary Purple */
+  color: #ffffff;
+  padding: 0.85rem;
+  border-radius: 10px;
+  border: none;
+  font-size: 0.95rem;
+  font-weight: 600;
   text-decoration: none;
-  font-weight: 500;
-  margin-bottom: 1rem;
-  transition: background 0.2s ease;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 14px rgba(124, 58, 237, 0.2);
 }
 
 .github-btn:hover {
-  background: #000;
+  background-color: #6d28d9; /* Darker Purple on hover */
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(124, 58, 237, 0.3);
 }
 
-/* Divider */
+.github-btn:active {
+  background-color: #5b21b6; /* Deep purple when clicked */
+  transform: translateY(0);
+}
+
+/* Ensure the loading spinner or icon matches nicely */
+.github-btn svg, 
+.github-btn .btn-icon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+/* ➖ Context Splitter Section ("OR" Divider) */
 .divider {
-  margin: 1rem 0;
-  font-size: 0.9rem;
+  text-align: center;
+  margin: 1.5rem 0;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
   color: #9ca3af;
   position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .divider::before,
 .divider::after {
   content: "";
-  position: absolute;
-  top: 50%;
-  width: 40%;
+  flex-grow: 1;
   height: 1px;
   background: #e5e7eb;
 }
 
 .divider::before {
-  left: 0;
+  margin-right: 12px;
 }
 
 .divider::after {
-  right: 0;
+  margin-left: 12px;
 }
 
-/* Form */
+/* 📝 Standard Input Fields Form Layout */
 form {
   text-align: left;
+  width: 100%;
 }
 
-form p {
-  margin-bottom: 1rem;
+.form-group {
+  margin-bottom: 1.25rem;
+}
+
+form label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #000000; /* Crisp black labels */
+  margin-bottom: 0.35rem;
 }
 
 form input {
   width: 100%;
-  padding: 0.6rem;
+  padding: 0.75rem;
   border: 1px solid #d1d5db;
-  border-radius: 6px;
-  margin-top: 0.3rem;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  color: #000000;
+  background-color: #ffffff;
+  box-sizing: border-box;
+  transition: all 0.15s ease;
 }
 
+/* Input Focus Ring Styles using Purple Highlight */
+form input:focus {
+  outline: none;
+  border-color: #7c3aed;
+  box-shadow: 0 0 0 4px #f5f3ff; 
+}
+
+/* Double input horizontal layouts (e.g., First Name / Last Name fields) */
+.form-row {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.form-row .form-group {
+  flex: 1;
+  margin-bottom: 0; /* Let row controls manage standard flow spacing */
+}
+
+/* 🍇 Core Secondary Submission Action Buttons */
 .btn {
   display: block;
   width: 100%;
-  background: #4f46e5;
-  color: #fff;
-  padding: 0.75rem;
-  border-radius: 6px;
-  border: none;
+  background-color: #000000; /* High-contrast crisp black button layout */
+  color: #ffffff;
+  padding: 0.85rem;
+  border-radius: 10px;
+  border: 1px solid #000000;
+  font-size: 0.95rem;
   font-weight: 600;
   cursor: pointer;
-  transition: background 0.2s ease;
+  transition: all 0.15s ease;
 }
 
 .btn:hover {
-  background: #4338ca;
+  background-color: #1f2937; /* Dark charcoal color scale shift */
+  border-color: #1f2937;
 }
 
-/* Switch Link */
+/* 🔄 Switch Screen Links Footer */
 .switch {
-  margin-top: 1rem;
+  margin-top: 1.5rem;
   font-size: 0.9rem;
-  color: #6b7280;
+  color: #4b5563;
 }
 
 .switch a {
-  color: #4f46e5;
+  color: #7c3aed; /* Hyperlinks catch the eye in signature purple */
   text-decoration: none;
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .switch a:hover {
   text-decoration: underline;
+  color: #6d28d9;
 }
 
-
-.github-btn {
-    background-color: #24292e;
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 10px;
-    border-radius: 5px;
-    text-decoration: none;
-    transition: background 0.3s ease;
+/* Onboarding Footnotes Layout */
+.footer-note {
+  margin-top: 1.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid #f3e8ff;
 }
 
-.github-btn:hover {
-    background-color: #444;
-}
-
-.divider {
-    text-align: center;
-    margin: 20px 0;
-    position: relative;
-}
-/* Optional: horizontal lines for the OR divider */
-.divider::before, .divider::after {
-    content: "";
-    height: 1px;
-    width: 30%;
-    background: #ddd;
-    display: inline-block;
-    vertical-align: middle;
-    margin: 0 10px;
-}
-
-
-.form-row {
-    display: flex;
-    gap: 15px;
-}
-.form-row .form-group {
-    flex: 1;
+.footer-note p {
+  margin: 0;
+  font-size: 0.75rem;
+  color: #9ca3af;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 500;
 }

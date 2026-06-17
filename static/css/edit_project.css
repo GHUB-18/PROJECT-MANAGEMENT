@@ -1,0 +1,205 @@
+.ep-wrapper {
+    max-width: 620px;
+    margin: 2.5rem auto;
+    padding: 0 1rem;
+}
+
+/* ── Page heading ── */
+.ep-heading {
+    margin: 0 0 .35rem;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #111827;
+}
+
+.ep-subheading {
+    margin: 0 0 2rem;
+    font-size: .9rem;
+    color: #6b7280;
+}
+
+/* ── Card ── */
+.ep-card {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
+    padding: 2rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,.05);
+}
+
+/* ── Django p wrappers from form.as_p ── */
+.ep-card p {
+    margin: 0 0 1.4rem;
+}
+
+.ep-card p:last-of-type {
+    margin-bottom: 0;
+}
+
+/* ── Labels ── */
+.ep-card label {
+    display: block;
+    font-size: .82rem;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: .45rem;
+    letter-spacing: .02em;
+}
+
+/* ── All input types ── */
+.ep-card input[type="text"],
+.ep-card input[type="email"],
+.ep-card input[type="date"],
+.ep-card input[type="number"],
+.ep-card input[type="url"],
+.ep-card select,
+.ep-card textarea {
+    width: 100%;
+    padding: .6rem .85rem;
+    font-size: .9rem;
+    font-family: inherit;
+    color: #111827;
+    background: #f9fafb;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    outline: none;
+    transition: border-color .15s, box-shadow .15s, background .15s;
+    appearance: none;
+    -webkit-appearance: none;
+}
+
+.ep-card input[type="text"]:focus,
+.ep-card input[type="email"]:focus,
+.ep-card input[type="date"]:focus,
+.ep-card input[type="number"]:focus,
+.ep-card input[type="url"]:focus,
+.ep-card select:focus,
+.ep-card textarea:focus {
+    border-color: #7c3aed;
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(124, 58, 237, .12);
+}
+
+.ep-card textarea {
+    resize: vertical;
+    min-height: 110px;
+    line-height: 1.55;
+}
+
+/* Dropdown arrow for single select */
+.ep-card select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236b7280' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right .85rem center;
+    padding-right: 2.25rem;
+}
+
+/* Multiple select (e.g. members) */
+.ep-card select[multiple] {
+    background-image: none;
+    padding-right: .85rem;
+    min-height: 120px;
+}
+
+/* ── Help text ── */
+.ep-card .helptext,
+.ep-card span.helptext {
+    display: block;
+    margin-top: .35rem;
+    font-size: .78rem;
+    color: #6b7280;
+}
+
+/* ── Field errors ── */
+.ep-card .errorlist {
+    list-style: none;
+    padding: 0;
+    margin: .35rem 0 0;
+}
+
+.ep-card .errorlist li {
+    font-size: .8rem;
+    color: #dc2626;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.ep-card .errorlist li::before {
+    content: '!';
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    color: #dc2626;
+    font-size: .7rem;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+/* ── Non-field errors ── */
+.ep-errors {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    border-radius: 8px;
+    padding: .85rem 1rem;
+    margin-bottom: 1.5rem;
+    font-size: .85rem;
+    color: #dc2626;
+}
+
+/* ── Divider ── */
+.ep-divider {
+    border: none;
+    border-top: 1px solid #f3f4f6;
+    margin: 1.75rem 0 1.5rem;
+}
+
+/* ── Actions row ── */
+.ep-actions {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: .75rem;
+}
+
+.ep-btn-cancel {
+    padding: .6rem 1.2rem;
+    font-size: .875rem;
+    font-weight: 500;
+    color: #374151;
+    background: #f9fafb;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    cursor: pointer;
+    text-decoration: none;
+    font-family: inherit;
+    transition: background .15s, border-color .15s;
+    display: inline-block;
+}
+
+.ep-btn-cancel:hover {
+    background: #f3f4f6;
+    border-color: #9ca3af;
+    color: #111827;
+}
+
+.ep-btn-save {
+    padding: .6rem 1.4rem;
+    font-size: .875rem;
+    font-weight: 600;
+    color: #fff;
+    background: #7c3aed;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background .15s;
+}
+
+.ep-btn-save:hover  { background: #6d28d9; }
+.ep-btn-save:active { background: #5b21b6; }

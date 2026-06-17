@@ -9,7 +9,7 @@
     {% for project in projects %}
         <div class="project-card">
             <div class="project-card-body">
-                <h4><a href="{% url 'projects:project_detail' project_id=project_item.id %}">{{ project.name }}</a></h4>
+                <h4><a href="{% url 'projects:project_detail' project_id=project_item.id %}">{{ project.title }}</a></h4>
                 <p>{{ project.description|truncatechars:150 }}</p>
                 <div class="project-meta">
                     <span class="badge">{{ project.members.count }} Members</span>

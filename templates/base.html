@@ -5,38 +5,308 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Project Management System{% endblock %}</title>
-    <link rel="stylesheet" href="{% static 'core/css/style.css' %}">
-    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
     <style>
+        :root {
+            /* Color Archetypes */
+            --color-bg-main: #fbfbfe;
+            --color-surface-white: #ffffff;
+            --color-text-black: #000000;
+            --color-text-muted: #4b5563;
+            --color-text-light: #94a3b8;
+            
+            /* Theme Purple Accents */
+            --color-purple-primary: #7c3aed;
+            --color-purple-hover: #6d28d9;
+            --color-purple-light: #f5f3ff;
+            --color-border: #f3e8ff;
+        }
+
+        /* 🌏 Reset and Grid Framework Layout */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--color-bg-main);
+            color: var(--color-text-black);
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* 🔮 Unified Navigation Sidebar Layout */
+        .sidebar {
+            width: 260px;
+            background-color: var(--color-surface-white);
+            border-right: 1px solid var(--color-border);
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            z-index: 100;
+        }
+
+        .sidebar-brand {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--color-border);
+            display: flex;
+            align-items: center;
+        }
+
+        .brand-name {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: var(--color-text-black);
+            letter-spacing: -0.025em;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 1rem 0.75rem;
+            margin: 0;
+            flex-grow: 1;
+        }
+
+        .sidebar-menu li {
+            margin-bottom: 0.25rem;
+        }
+
+        /* Sidebar Navigation Links */
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            color: var(--color-text-muted);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            border-radius: 10px;
+            transition: all 0.2s ease;
+        }
+
+        .sidebar-link:hover {
+            background-color: var(--color-purple-light);
+            color: var(--color-purple-primary);
+        }
+
+        /* 🎯 Active Navigation Route State */
+        .sidebar-link.active {
+            background-color: var(--color-purple-primary);
+            color: var(--color-surface-white);
+        }
+
+        /* Nested Accordion System */
         .dropdown-menu {
             display: none;
             list-style: none;
-            padding-left: 1.5rem;
-            margin-top: 0.25rem;
+            padding-left: 1rem;
+            margin: 0.25rem 0 0.5rem 0;
         }
+        
         .dropdown-menu.show {
             display: block;
         }
+        
         .sidebar-link.dropdown-toggle::after {
             content: ' ▾';
-            float: right;
+            margin-left: auto;
             transition: transform 0.2s;
         }
+        
         .sidebar-link.dropdown-toggle.open::after {
             transform: rotate(180deg);
         }
+        
         .sidebar-sub-link {
             display: block;
             padding: 0.5rem 1rem;
-            color: #64748B;
+            color: var(--color-text-muted);
             text-decoration: none;
             font-size: 0.9rem;
-            border-radius: 0.375rem;
-            transition: all 0.2s;
+            font-weight: 500;
+            border-radius: 8px;
+            transition: all 0.15s ease;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
+        
         .sidebar-sub-link:hover {
-            background-color: var(--color-bg-clean);
-            color: var(--color-blue-accent);
+            background-color: var(--color-purple-light);
+            color: var(--color-purple-primary);
+        }
+
+        /* 🏁 Content Wrapper Panels */
+        .main-wrapper {
+            margin-left: 260px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+        }
+
+        /* 👑 Premium Fixed Upper Layout Navigation Deck Header */
+        .navbar {
+            height: 70px;
+            background-color: var(--color-surface-white);
+            border-bottom: 1px solid var(--color-border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 90;
+        }
+
+        .navbar-title h2 {
+            margin: 0;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--color-text-black);
+        }
+
+        .navbar-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .navbar-icon-btn {
+            width: 40px;
+            height: 40px;
+            border: none;
+            background: #f8fafc;
+            border-radius: 50%;
+            cursor: pointer;
+            position: relative;
+            transition: 0.2s;
+            color: var(--color-text-muted);
+        }
+
+        .navbar-icon-btn:hover {
+            background: #f3f4f6;
+        }
+
+        .notification-dot {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 8px;
+            height: 8px;
+            background: #ef4444;
+            border-radius: 50%;
+        }
+
+        .profile-dropdown {
+            position: relative;
+        }
+
+        .profile-avatar {
+            width: 42px;
+            height: 42px;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            background: linear-gradient(135deg, #7c3aed, #5b21b6);
+            color: white;
+            font-weight: 700;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.2s;
+        }
+
+        .profile-avatar:hover {
+            transform: scale(1.05);
+        }
+
+        .profile-menu {
+            position: absolute;
+            top: 55px;
+            right: 0;
+            width: 280px;
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.12);
+            display: none;
+            z-index: 1000;
+            opacity: 0;
+            transform: translateY(-8px);
+            pointer-events: none;
+        }
+
+        .profile-menu.show {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+            transition: opacity .2s ease, transform .2s ease;
+        }
+
+        .profile-header {
+            padding: 24px;
+            text-align: center;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .profile-avatar-large {
+            width: 72px;
+            height: 72px;
+            margin: auto auto 12px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #7c3aed, #5b21b6);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            font-weight: 700;
+        }
+
+        .profile-header h4 {
+            margin: 0;
+            font-size: 16px;
+            color: var(--color-text-black);
+        }
+
+        .profile-header p {
+            margin: 6px 0 0 0;
+            color: #64748b;
+            font-size: 13px;
+        }
+
+        .profile-menu a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 20px;
+            text-decoration: none;
+            color: #374151;
+            transition: 0.15s;
+        }
+
+        .profile-menu a:hover {
+            background: #f5f3ff;
+        }
+
+        .logout-link {
+            color: #dc2626 !important;
+        }
+
+        .logout-link:hover {
+            background: #fef2f2 !important;
+        }
+
+        /* Main Workspace App Shell */
+        .content-container {
+            padding: 2rem;
+            flex-grow: 1;
+            box-sizing: border-box;
         }
     </style>
     {% block extra_css %}{% endblock %}
@@ -45,7 +315,6 @@
 
     <aside class="sidebar">
         <div class="sidebar-brand">
-            <!-- <img src="{% static 'images/logo.png' %}"  class="logo"> -->
             <span class="brand-name">ProjectHub</span>
         </div>
         
@@ -61,12 +330,12 @@
                         {% for project in user_projects %}
                             <li>
                                 <a href="{% url 'project_detail' project.id %}" class="sidebar-sub-link">
-                                    • {{ project.name }}
+                                    • {{ project.title }}
                                 </a>
                             </li>
                         {% endfor %}
                     {% else %}
-                        <li><span class="sidebar-sub-link" style="font-style: italic;">No active projects</span></li>
+                        <li><span class="sidebar-sub-link" style="font-style: italic; color: var(--color-text-light);">No active projects</span></li>
                     {% endif %}
                 </ul>
             </li>
@@ -84,7 +353,7 @@
                   </a>
               {% else %}
                   <a href="#" onclick="alert('Please create or join a project first to view tasks!'); return false;" 
-                    class="sidebar-link" style="opacity: 0.6; cursor: not-allowed;">
+                    class="sidebar-link" style="opacity: 0.5; cursor: not-allowed;">
                     📋 To do
                   </a>
               {% endif %}
@@ -92,10 +361,10 @@
 
             {% if is_project_admin or user.role == 'Admin' %}
                 <li style="margin-top: 2rem; border-top: 1px solid var(--color-border); padding-top: 1rem;">
-                    <span style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: #94A3B8; padding-left: 1rem;">Management</span>
+                    <span style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--color-text-light); padding-left: 1rem;">Management</span>
                 </li>
                 <li>
-                    <a href="{% url 'administration' %}" class="sidebar-link {% if request.resolver_match.url_name == 'administration' %}active{% endif %}" style="color: var(--color-primary-purple);">
+                    <a href="{% url 'administration' %}" class="sidebar-link {% if request.resolver_match.url_name == 'administration' %}active{% endif %}" style="color: var(--color-purple-primary);">
                         ⚙️ Administration
                     </a>
                 </li>
@@ -109,8 +378,50 @@
             <div class="navbar-title">
                 <h2>{% block page_title %}Dashboard{% endblock %}</h2>
             </div>
-            <div class="navbar-user">
-                <span>Welcome, {% if user.is_authenticated %}{{ user.username }}{% else %}Team Member{% endif %}</span>
+
+            <div class="navbar-right">
+                <button class="navbar-icon-btn">
+                    <i class="fas fa-bell"></i>
+                    <span class="notification-dot"></span>
+                </button>
+
+                <div class="profile-dropdown">
+                    <button id="profileBtn" class="profile-avatar">
+                        {% if user.first_name and user.last_name %}
+                            {{ user.first_name|slice:":1"|upper }}{{ user.last_name|slice:":1"|upper }}
+                        {% elif user.first_name %}
+                            {{ user.first_name|slice:":1"|upper }}
+                        {% else %}
+                            {{ user.username|slice:":2"|upper }}
+                        {% endif %}
+                    </button>
+
+                    <div id="profileMenu" class="profile-menu">
+                        <div class="profile-header">
+                            <div class="profile-avatar-large">
+                                {% if user.first_name and user.last_name %}
+                                    {{ user.first_name|slice:":1"|upper }}{{ user.last_name|slice:":1"|upper }}
+                                {% elif user.first_name %}
+                                    {{ user.first_name|slice:":1"|upper }}
+                                {% else %}
+                                    {{ user.username|slice:":2"|upper }}
+                                {% endif %}
+                            </div>
+                            <h4>{{ user.get_full_name|default:user.username }}</h4>
+                            <p>{{ user.email|default:"No email provided" }}</p>
+                        </div>
+
+                        <a href="{% url 'accounts:profile' %}">
+                            <i class="fas fa-user"></i> My Profile
+                        </a>
+                        <a href="#">
+                            <i class="fas fa-cog"></i> Settings
+                        </a>
+                        <a href="{% url 'account_logout' %}" class="logout-link">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </a>
+                    </div>
+                </div>
             </div>
         </header>
 
@@ -123,6 +434,7 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // Sidebar Dropdown Toggle logic
             const toggleBtn = document.getElementById('projectsDropdownToggle');
             const menu = document.getElementById('projectsDropdownMenu');
 
@@ -133,9 +445,27 @@
                     toggleBtn.classList.toggle('open');
                 });
             }
+
+            // Global Profile Panel Logic 
+            const profileBtn = document.getElementById('profileBtn');
+            const profileMenu = document.getElementById('profileMenu');
+
+            if (profileBtn && profileMenu) {
+                profileBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    profileMenu.classList.toggle('show');
+                });
+
+                document.addEventListener('click', function() {
+                    profileMenu.classList.remove('show');
+                });
+
+                profileMenu.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                });
+            }
         });
     </script>
-    <script src="{% static 'js/main.js' %}"></script>
     {% block extra_js %}{% endblock %}
 </body>
 </html>

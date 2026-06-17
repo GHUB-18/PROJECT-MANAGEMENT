@@ -19,14 +19,20 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
-from core import views
+
+from core import views as core_views    
 from accounts import views as accounts_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', accounts_views.auth_redirect, name="home"), # FIXED: Empty string
-    path('dashboard/', views.dashboard, name='dashboard'),
+
+    path('', core_views.index, name="index"),
+    path('dashboard/', core_views.dashboard, name='dashboard'),
+    path('admin-panel/', core_views.admin_panel, name='admin_panel'),
+
     path('onboarding/', accounts_views.onboarding_view, name='onboarding'),
+
+    path('accounts/', include('accounts.urls', namespace='accounts')),
     path('projects/', include('projects.urls')),
     path('tasks/', include('tasks.urls')),
     path('accounts/', include('allauth.urls')),

@@ -1,10 +1,110 @@
-<!-- accounts/login.html -->
 {% extends "base.html" %}
 {% load static %}
 {% load socialaccount %}
 
 {% block extra_head %}
-<link rel="stylesheet" href="{% static 'core/css/auth.css' %}">
+<style>
+  /* Canvas Setup */
+  .auth-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 80vh;
+    padding: 1.5rem;
+    box-sizing: border-box;
+  }
+
+  /* White Card Box with subtle purple-tinted depth shadow */
+  .auth-card {
+    background: #ffffff;
+    padding: 2.5rem 2rem;
+    border-radius: 16px;
+    box-shadow: 0 10px 25px rgba(124, 58, 237, 0.05), 0 4px 12px rgba(0, 0, 0, 0.03);
+    border: 1px solid #f3e8ff;
+    max-width: 420px;
+    width: 100%;
+    text-align: center;
+    box-sizing: border-box;
+  }
+
+  /* Crisp Black Title Header */
+  .auth-card h2 {
+    font-size: 1.75rem;
+    font-weight: 800;
+    margin: 0 0 0.5rem 0;
+    color: #000000;
+    letter-spacing: -0.025em;
+  }
+
+  /* Clear Subtitles */
+  .auth-card p.subtitle {
+    font-size: 0.925rem;
+    line-height: 1.5;
+    margin: 0 0 1.75rem 0;
+    color: #4b5563;
+  }
+
+  /* 🍇 Primary Purple Action Button */
+  .purple-github-btn {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    background-color: #7c3aed;
+    color: #ffffff;
+    padding: 0.85rem;
+    border-radius: 10px;
+    border: none;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    box-shadow: 0 4px 14px rgba(124, 58, 237, 0.2);
+  }
+
+  .purple-github-btn:hover {
+    background-color: #6d28d9;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(124, 58, 237, 0.3);
+  }
+
+  .purple-github-btn:active {
+    background-color: #5b21b6;
+    transform: translateY(0);
+  }
+
+  /* Centered vector icons wrapper */
+  .btn-icon-wrap {
+    width: 20px;
+    height: 20px;
+    filter: brightness(0) invert(1); /* Forces standard icon assets to render pure white */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .btn-icon-wrap img {
+    width: 100%;
+    height: 100%;
+  }
+
+  /* Card Separator Breakline */
+  .card-footer-note {
+    margin-top: 1.75rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid #f3e8ff;
+  }
+
+  .card-footer-note p {
+    margin: 0;
+    font-size: 0.75rem;
+    color: #9ca3af;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 600;
+  }
+</style>
 {% endblock %}
 
 {% block content %}
@@ -15,18 +115,22 @@
     </script>
 {% endif %}
 
-<div class="container">
-  <div class="auth-box">
+<div class="auth-container">
+  <div class="auth-card">
     <h2>Welcome Back</h2>
+    <p class="subtitle">Sign in securely with GitHub to access your workspace and projects.</p>
 
-    <p>Sign in securely with GitHub to access your workspace and projects.</p>
+    <form method="post" action="{% provider_login_url 'github' %}">
+        {% csrf_token %}
+        <button type="submit" class="purple-github-btn" id="githubBtn">
+           <span class="btn-icon-wrap">
+               <img src="{% static 'core/img/github-icon.svg' %}" alt="">
+           </span>
+           <span>Continue with GitHub</span>
+        </button>
+    </form>
 
-    <a href="{% provider_login_url 'github' %}" class="github-btn" id="githubBtn">
-       <img src="{% static 'core/img/github-icon.svg' %}" class="btn-icon">
-       Continue with GitHub
-    </a>
-
-    <div class="footer-note">
+    <div class="card-footer-note">
       <p>Secure authentication powered by GitHub OAuth.</p>
     </div>
   </div>
@@ -34,8 +138,10 @@
 
 <script>
 document.getElementById("githubBtn").addEventListener("click", function () {
-    this.innerHTML = "Redirecting to GitHub...";
+    this.innerHTML = `
+        <span class="btn-icon-wrap" style="animation: spin 1s linear infinite; filter: none;">🔄</span>
+        <span>Redirecting to GitHub...</span>
+    `;
 });
 </script>
-
 {% endblock %}

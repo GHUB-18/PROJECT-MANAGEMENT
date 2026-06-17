@@ -1,15 +1,19 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import User
+from .models import User, Profile
 
-# Using UserAdmin gives you the specialized layout for passwords and permissions
+class ProfileInline(admin.StackedInline):
+    model = Profile
+    can_delete = False
+    verbose_name_plural = 'Developer Profiles'
+    fk_name = 'user'
+
 @admin.register(User)
 class CustomUserAdmin(UserAdmin):
-    # This determines what you see in the "User List" view
+    inlines = (ProfileInline, )
     list_display = ('username', 'email', 'is_staff', 'is_active')
     
-    # This adds the custom fields (like bio or profile_picture) to the edit page
+    # FIXED: Replaced 'bio' with fields that actually exist on the custom User model
     fieldsets = UserAdmin.fieldsets + (
-        ('Extra Profile Info', {'fields': ('bio', 'profile_picture')}),
+        ('Extra Profile Info', {'fields': ('profile_picture', 'job_title')}),
     )
-

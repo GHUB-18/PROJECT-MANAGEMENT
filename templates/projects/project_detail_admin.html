@@ -1,0 +1,425 @@
+{% extends 'base.html' %}
+
+{% block page_title %}{{ project.title }} (Admin Center){% endblock %}
+
+{% block extra_css %}
+<style>
+    /* View Core Layout wrapper */
+    .admin-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem 1.5rem;
+        background-color: #fbfbfe;
+        min-height: 100vh;
+        box-sizing: border-box;
+    }
+
+    /* Admin Navigation Deck Header */
+    .admin-header-deck {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 2rem;
+        padding-bottom: 1.5rem;
+        border-bottom: 1px solid #f3e8ff;
+    }
+
+    .admin-meta-info h1 {
+        font-size: 2rem;
+        font-weight: 800;
+        color: #000000;
+        margin: 0 0 0.5rem 0;
+        letter-spacing: -0.025em;
+    }
+
+    .admin-badge-row {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .badge-admin-label {
+        background-color: #000000;
+        color: #ffffff;
+        font-size: 10px;
+        font-weight: 700;
+        text-transform: uppercase;
+        padding: 0.2rem 0.5rem;
+        border-radius: 4px;
+        letter-spacing: 0.05em;
+    }
+
+    .badge-member-count {
+        background-color: #f5f3ff;
+        color: #7c3aed;
+        font-size: 0.75rem;
+        font-weight: 700;
+        padding: 0.25rem 0.65rem;
+        border-radius: 9999px;
+    }
+
+    /* Admin Interactive Actions Buttons */
+    .action-button-group {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    .btn-admin-secondary {
+        display: inline-block;
+        text-decoration: none;
+        background-color: #ffffff;
+        color: #000000;
+        border: 1px solid #d1d5db;
+        padding: 0.5rem 1rem;
+        font-size: 0.875rem;
+        font-weight: 600;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background-color 0.15s ease;
+    }
+
+    .btn-admin-secondary:hover {
+        background-color: #f9fafb;
+    }
+
+    .btn-admin-destructive {
+        background-color: transparent;
+        color: #dc2626;
+        border: 1px solid transparent;
+        padding: 0.5rem 1rem;
+        font-size: 0.875rem;
+        font-weight: 600;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.15s ease;
+    }
+
+    .btn-admin-destructive:hover {
+        background-color: #fef2f2;
+    }
+
+    /* 🔑 Token Invites Form Panel Card Banner Row */
+    .invite-management-banner {
+        background: #ffffff;
+        border: 1px solid #f3e8ff;
+        border-left: 4px solid #7c3aed;
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 4px 12px rgba(124, 58, 237, 0.02);
+        box-sizing: border-box;
+    }
+
+    .invite-management-banner label {
+        display: block;
+        font-size: 0.875rem;
+        font-weight: 700;
+        color: #000000;
+        margin-bottom: 0.5rem;
+    }
+
+    .invite-input-row {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    .invite-input-row input[type="text"] {
+        flex: 1;
+        padding: 0.65rem 1rem;
+        border: 1px solid #d1d5db;
+        border-radius: 8px;
+        font-size: 0.875rem;
+        color: #4b5563;
+        background-color: #fafafa;
+        outline: none;
+    }
+
+    .btn-purple-action {
+        background-color: #7c3aed;
+        color: #ffffff;
+        border: none;
+        padding: 0.65rem 1.25rem;
+        font-size: 0.875rem;
+        font-weight: 600;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background-color 0.15s ease;
+    }
+
+    .btn-purple-action:hover {
+        background-color: #6d28d9;
+    }
+
+    /* Layout Responsive Matrix */
+    .admin-grid-layout {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 1.5rem;
+    }
+
+    @media (max-width: 992px) {
+        .admin-grid-layout {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    /* Card Panels */
+    .content-panel-card {
+        background-color: #ffffff;
+        border: 1px solid #f3e8ff;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.01);
+        overflow: hidden;
+    }
+
+    .panel-header-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 1.25rem;
+        border-bottom: 1px solid #f3e8ff;
+    }
+
+    .panel-header-row h3 {
+        margin: 0;
+        font-size: 1rem;
+        font-weight: 700;
+        color: #000000;
+    }
+
+    .panel-header-row .action-trigger {
+        font-size: 0.875rem;
+        color: #7c3aed;
+        text-decoration: none;
+        font-weight: 600;
+    }
+
+    /* Task Rows */
+    .task-stack-list {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .task-row-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 1.25rem;
+        border-bottom: 1px solid #fafafa;
+    }
+
+    .task-title {
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: #000000;
+        margin: 0 0 0.25rem 0;
+    }
+
+    .task-due-date {
+        font-size: 0.75rem;
+        color: #94a3b8;
+        margin: 0;
+    }
+
+    .priority-badge {
+        font-size: 0.75rem;
+        font-weight: 600;
+        padding: 0.25rem 0.5rem;
+        background-color: #f3f4f6;
+        color: #4b5563;
+        border-radius: 6px;
+    }
+
+    /* Team Roster */
+    .team-scroll-panel {
+        padding: 1.25rem;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .team-member-row {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .avatar-initial-circle {
+        width: 36px;
+        height: 36px;
+        background-color: #f5f3ff;
+        color: #7c3aed;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.875rem;
+        font-weight: 700;
+    }
+
+    .member-name {
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: #000000;
+        margin: 0;
+    }
+
+    .completed-log-row {
+        padding: 1rem 1.25rem;
+        font-size: 0.875rem;
+        color: #94a3b8;
+        text-decoration: line-through;
+        border-bottom: 1px solid #fbfbfe;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .empty-state-notice {
+        padding: 2.5rem 1.5rem;
+        text-align: center;
+        color: #94a3b8;
+        font-size: 0.875rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="admin-container">
+
+    <div class="admin-header-deck">
+        <div class="admin-meta-info">
+            <h1>{{ project.title }}</h1>
+            <div class="admin-badge-row">
+                <span class="badge-admin-label">Workspace Control Box</span>
+                <span class="badge-member-count">{{ project.members.count }} Members Team Size</span>
+            </div>
+        </div>
+
+        <div class="action-button-group">
+            <a href="{% url 'projects:edit_project' project.id %}" class="btn-admin-secondary">
+                Configuration Settings
+            </a>
+            <button onclick="confirmDeleteProject()" class="btn-admin-destructive">
+                Delete Workspace
+            </button>
+        </div>
+    </div>
+
+    <div class="invite-management-banner">
+        <label for="inviteLink">Active Team Generation Link Token</label>
+        <div class="invite-input-row">
+            <input type="text" readonly id="inviteLink" value="{{ request.get_host }}{% url 'projects:join_project' project.invite_token %}">
+            <button onclick="copyInviteLink()" class="btn-purple-action" id="copyBtn">
+                Copy Reference Link
+            </button>
+        </div>
+    </div>
+
+    <div class="admin-grid-layout">
+        
+        <div class="content-panel-card">
+            <div class="panel-header-row">
+                <h3>Workspace Backlog</h3>
+                <a href="#" class="action-trigger">+ Initialize Task</a>
+            </div>
+
+            <div class="task-stack-list">
+                {% for task in pending_tasks %}
+                    <div class="task-row-item">
+                        <div>
+                            <p class="task-title">{{ task.title }}</p>
+                            <p class="task-due-date">📅 Targeted Deadline: {{ task.due_date|date:"M d, Y" }}</p>
+                        </div>
+                        <span class="priority-badge">{{ task.priority }}</span>
+                    </div>
+                {% empty %}
+                    <div class="empty-state-notice">
+                        No outstanding structural tasks in active backlog queues. 🎉
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="content-panel-card">
+            <div class="panel-header-row">
+                <h3>System Operators</h3>
+            </div>
+            <div class="team-scroll-panel">
+                {% for member in project.members.all %}
+                    <div class="team-member-row">
+                        <div class="avatar-initial-circle">
+                            {{ member.username|first|upper }}
+                        </div>
+                        <div>
+                            <p class="member-name">{{ member.get_full_name|default:member.username }}</p>
+                            {% if member == project.owner %}
+                                <span style="font-size: 11px; color: #7c3aed; font-weight: 700;">System Administrator</span>
+                            {% else %}
+                                <span style="font-size: 11px; color: #94a3b8; font-weight: 500;">Active Operator</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <div class="content-panel-card" style="margin-top: 1.5rem;">
+        <div class="panel-header-row">
+            <h3 style="color: #94a3b8;">Closed Backlog History</h3>
+        </div>
+        <div class="task-stack-list">
+            {% for task in completed_tasks %}
+                <div class="completed-log-row">
+                    <span>✓ {{ task.title }}</span>
+                    <span style="font-size: 0.75rem; color: #cbd5e1;">Resolved {{ task.updated_at|timesince }} ago</span>
+                </div>
+            {% empty %}
+                <div class="empty-state-notice" style="padding: 1.5rem;">
+                    No tasks have cycled to completion inside this deployment environment yet.
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function copyInviteLink() {
+    const input = document.getElementById("inviteLink");
+    const button = document.getElementById("copyBtn");
+    
+    input.select();
+    navigator.clipboard.writeText(input.value);
+    
+    button.textContent = "Copied! ✓";
+    button.style.backgroundColor = "#000000";
+    
+    setTimeout(() => {
+        button.textContent = "Copy Reference Link";
+        button.style.backgroundColor = "#7c3aed";
+    }, 2000);
+}
+
+function confirmDeleteProject() {
+    if (confirm("🔴 WARNING: This action will permanently drop this project workspace and all relative backlogs. Type confirm to proceed.")) {
+        // Form generation fallback tracking routing execution logic
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = "{% url 'projects:edit_project' project.id %}"; // Replace with explicit delete endpoints if configured
+        
+        const csrfInput = document.createElement('input');
+        csrfInput.type = 'hidden';
+        csrfInput.name = 'csrfmiddlewaretoken';
+        csrfInput.value = '{{ csrf_token }}';
+        
+        form.appendChild(csrfInput);
+        document.body.appendChild(form);
+        form.submit();
+    }
+}
+</script>
+{% endblock %}
